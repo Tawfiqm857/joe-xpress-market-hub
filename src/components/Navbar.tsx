@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { ThemeContext } from '../context/ThemeContext';
 import ThemeToggle from './ThemeToggle';
 
-const Navbar = () => {
+const Navbar: React.FC = () => {
   const { theme } = useContext(ThemeContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 

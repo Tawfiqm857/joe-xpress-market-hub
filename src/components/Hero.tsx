@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { ThemeContext } from '../context/ThemeContext';
 import SearchBar from './SearchBar';
 
-const Hero = () => {
+const Hero: React.FC = () => {
   const { theme } = useContext(ThemeContext);
   
   return (

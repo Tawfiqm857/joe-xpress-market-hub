@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { ThemeContext } from '../context/ThemeContext';
 
-const Footer = () => {
+const Footer: React.FC = () => {
   const { theme } = useContext(ThemeContext);
   
   return (

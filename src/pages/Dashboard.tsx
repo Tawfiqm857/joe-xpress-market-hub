@@ -4,15 +4,25 @@ import { Link } from 'react-router-dom';
 import { ThemeContext } from '../context/ThemeContext';
 import products, { formatPrice, getSellerProducts } from '../data/products';
 
-const Dashboard = () => {
+interface TabState {
+  activeTab: string;
+}
+
+interface StatsType {
+  views: number;
+  enquiries: number;
+  products: number;
+}
+
+const Dashboard: React.FC = () => {
   const { theme } = useContext(ThemeContext);
   // For demo, we'll simulate being logged in as seller ID 1
   const sellerId = 1;
   const sellerProducts = getSellerProducts(sellerId);
-  const [activeTab, setActiveTab] = useState('products');
+  const [activeTab, setActiveTab] = useState<string>('products');
   
   // Mock statistics data
-  const stats = {
+  const stats: StatsType = {
     views: 523,
     enquiries: 32,
     products: sellerProducts.length

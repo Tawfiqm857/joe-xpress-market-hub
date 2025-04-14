@@ -6,7 +6,7 @@ import Hero from '../components/Hero';
 import ProductCard from '../components/ProductCard';
 import products from '../data/products';
 
-const Index = () => {
+const Index: React.FC = () => {
   const { theme } = useContext(ThemeContext);
   // Get only the first 4 products for the featured section
   const featuredProducts = products.slice(0, 4);

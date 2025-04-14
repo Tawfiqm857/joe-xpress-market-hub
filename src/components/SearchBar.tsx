@@ -3,12 +3,12 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ThemeContext } from '../context/ThemeContext';
 
-const SearchBar = () => {
+const SearchBar: React.FC = () => {
   const [query, setQuery] = useState('');
   const { theme } = useContext(ThemeContext);
   const navigate = useNavigate();
 
-  const handleSearch = (e) => {
+  const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
       navigate(`/products?search=${query}`);

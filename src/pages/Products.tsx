@@ -6,7 +6,7 @@ import ProductCard from '../components/ProductCard';
 import SearchBar from '../components/SearchBar';
 import products from '../data/products';
 
-const Products = () => {
+const Products: React.FC = () => {
   const { theme } = useContext(ThemeContext);
   const location = useLocation();
   const [filteredProducts, setFilteredProducts] = useState(products);

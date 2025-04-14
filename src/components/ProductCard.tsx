@@ -4,7 +4,28 @@ import { Link } from 'react-router-dom';
 import { ThemeContext } from '../context/ThemeContext';
 import { formatPrice } from '../data/products';
 
-const ProductCard = ({ product }) => {
+interface ProductSeller {
+  id: number;
+  name: string;
+  location: string;
+  phone: string;
+}
+
+interface Product {
+  id: number;
+  title: string;
+  price: number;
+  category: string;
+  description: string;
+  image: string;
+  seller: ProductSeller;
+}
+
+interface ProductCardProps {
+  product: Product;
+}
+
+const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { theme } = useContext(ThemeContext);
   
   return (

@@ -2,7 +2,20 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { ThemeContext } from '../context/ThemeContext';
 
-const ContactModal = ({ isOpen, onClose, seller }) => {
+interface Seller {
+  id?: number;
+  name: string;
+  location: string;
+  phone: string;
+}
+
+interface ContactModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  seller: Seller;
+}
+
+const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, seller }) => {
   const { theme } = useContext(ThemeContext);
   const [message, setMessage] = useState('');
   const [messageSent, setMessageSent] = useState(false);
@@ -16,7 +29,7 @@ const ContactModal = ({ isOpen, onClose, seller }) => {
   
   if (!isOpen) return null;
   
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // In a real app, this would send the message to an API
     console.log(`Message to ${seller.name}: ${message}`);

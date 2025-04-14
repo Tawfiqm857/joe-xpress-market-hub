@@ -5,8 +5,13 @@ import { ThemeContext } from '../context/ThemeContext';
 import ContactModal from '../components/ContactModal';
 import products, { formatPrice } from '../data/products';
 
-const ProductDetail = () => {
-  const { id } = useParams();
+interface RouteParams {
+  id: string;
+  [key: string]: string | undefined;
+}
+
+const ProductDetail: React.FC = () => {
+  const { id } = useParams<RouteParams>();
   const { theme } = useContext(ThemeContext);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const navigate = useNavigate();
