@@ -1,15 +1,24 @@
 
 import React, { useContext, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ThemeContext } from '../context/ThemeContext';
+import { useAuth } from '../context/AuthContext';
 import ThemeToggle from './ThemeToggle';
 
 const Navbar: React.FC = () => {
   const { theme } = useContext(ThemeContext);
+  const { isAuthenticated, user, logout } = useAuth();
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+    setIsMenuOpen(false);
   };
 
   return (
@@ -68,16 +77,59 @@ const Navbar: React.FC = () => {
             textDecoration: 'none',
             fontWeight: 500,
           }}>Products</Link>
-          <Link to="/post-product" style={{
-            color: theme === 'light' ? '#001f3f' : '#ffffff',
-            textDecoration: 'none',
-            fontWeight: 500,
-          }}>Sell</Link>
-          <Link to="/dashboard" style={{
-            color: theme === 'light' ? '#001f3f' : '#ffffff',
-            textDecoration: 'none',
-            fontWeight: 500,
-          }}>Dashboard</Link>
+          
+          {isAuthenticated ? (
+            <>
+              <Link to="/post-product" style={{
+                color: theme === 'light' ? '#001f3f' : '#ffffff',
+                textDecoration: 'none',
+                fontWeight: 500,
+              }}>Sell</Link>
+              <Link to="/dashboard" style={{
+                color: theme === 'light' ? '#001f3f' : '#ffffff',
+                textDecoration: 'none',
+                fontWeight: 500,
+              }}>Dashboard</Link>
+              <button 
+                onClick={handleLogout}
+                style={{
+                  backgroundColor: 'transparent',
+                  border: 'none',
+                  color: theme === 'light' ? '#001f3f' : '#ffffff',
+                  fontWeight: 500,
+                  cursor: 'pointer',
+                  padding: 0,
+                }}
+              >
+                Logout
+              </button>
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'center',
+                color: 'var(--accent)',
+                fontWeight: 500,
+              }}>
+                {user?.name}
+              </div>
+            </>
+          ) : (
+            <>
+              <Link to="/login" style={{
+                color: theme === 'light' ? '#001f3f' : '#ffffff',
+                textDecoration: 'none',
+                fontWeight: 500,
+              }}>Login</Link>
+              <Link to="/register" style={{
+                backgroundColor: 'var(--accent)',
+                color: 'white',
+                padding: '0.5rem 1rem',
+                borderRadius: '2rem',
+                textDecoration: 'none',
+                fontWeight: 500,
+              }}>Sign Up</Link>
+            </>
+          )}
+          
           <ThemeToggle />
         </div>
       </div>
@@ -114,30 +166,84 @@ const Navbar: React.FC = () => {
             >
               Products
             </Link>
-            <Link 
-              to="/post-product" 
-              onClick={() => setIsMenuOpen(false)}
-              style={{
-                color: theme === 'light' ? '#001f3f' : '#ffffff',
-                textDecoration: 'none',
-                fontWeight: 500,
-                padding: '0.5rem 0',
-              }}
-            >
-              Sell
-            </Link>
-            <Link 
-              to="/dashboard" 
-              onClick={() => setIsMenuOpen(false)}
-              style={{
-                color: theme === 'light' ? '#001f3f' : '#ffffff',
-                textDecoration: 'none',
-                fontWeight: 500,
-                padding: '0.5rem 0',
-              }}
-            >
-              Dashboard
-            </Link>
+            
+            {isAuthenticated ? (
+              <>
+                <Link 
+                  to="/post-product" 
+                  onClick={() => setIsMenuOpen(false)}
+                  style={{
+                    color: theme === 'light' ? '#001f3f' : '#ffffff',
+                    textDecoration: 'none',
+                    fontWeight: 500,
+                    padding: '0.5rem 0',
+                  }}
+                >
+                  Sell
+                </Link>
+                <Link 
+                  to="/dashboard" 
+                  onClick={() => setIsMenuOpen(false)}
+                  style={{
+                    color: theme === 'light' ? '#001f3f' : '#ffffff',
+                    textDecoration: 'none',
+                    fontWeight: 500,
+                    padding: '0.5rem 0',
+                  }}
+                >
+                  Dashboard
+                </Link>
+                <button 
+                  onClick={handleLogout}
+                  style={{
+                    backgroundColor: 'transparent',
+                    border: 'none',
+                    color: theme === 'light' ? '#001f3f' : '#ffffff',
+                    fontWeight: 500,
+                    cursor: 'pointer',
+                    padding: '0.5rem 0',
+                    textAlign: 'left',
+                  }}
+                >
+                  Logout
+                </button>
+                <div style={{ 
+                  padding: '0.5rem 0',
+                  color: 'var(--accent)',
+                  fontWeight: 500,
+                }}>
+                  {user?.name}
+                </div>
+              </>
+            ) : (
+              <>
+                <Link 
+                  to="/login" 
+                  onClick={() => setIsMenuOpen(false)}
+                  style={{
+                    color: theme === 'light' ? '#001f3f' : '#ffffff',
+                    textDecoration: 'none',
+                    fontWeight: 500,
+                    padding: '0.5rem 0',
+                  }}
+                >
+                  Login
+                </Link>
+                <Link 
+                  to="/register" 
+                  onClick={() => setIsMenuOpen(false)}
+                  style={{
+                    color: 'var(--accent)',
+                    textDecoration: 'none',
+                    fontWeight: 500,
+                    padding: '0.5rem 0',
+                  }}
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
+            
             <div style={{ marginTop: '0.5rem' }}>
               <ThemeToggle />
             </div>

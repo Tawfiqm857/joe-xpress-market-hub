@@ -1,37 +1,106 @@
 
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { ThemeContext } from '../context/ThemeContext';
-import products, { formatPrice, getSellerProducts } from '../data/products';
+import { useAuth } from '../context/AuthContext';
+import { productsAPI } from '../services/api';
+import { formatPrice } from '../data/products';
 
 interface TabState {
   activeTab: string;
 }
 
-interface StatsType {
-  views: number;
-  enquiries: number;
-  products: number;
+interface Product {
+  id: number;
+  title: string;
+  price: number;
+  category: string;
+  description: string;
+  image: string;
+  seller: {
+    id: number;
+    name: string;
+    location: string;
+    phone: string;
+  };
 }
 
 const Dashboard: React.FC = () => {
   const { theme } = useContext(ThemeContext);
-  // For demo, we'll simulate being logged in as seller ID 1
-  const sellerId = 1;
-  const sellerProducts = getSellerProducts(sellerId);
+  const { user, token } = useAuth();
   const [activeTab, setActiveTab] = useState<string>('products');
+  const [userProducts, setUserProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   
   // Mock statistics data
-  const stats: StatsType = {
+  const stats = {
     views: 523,
     enquiries: 32,
-    products: sellerProducts.length
+    products: userProducts.length
+  };
+  
+  // Fetch user's products
+  useEffect(() => {
+    const fetchUserProducts = async () => {
+      try {
+        setLoading(true);
+        if (token) {
+          // For now, we'll use the mock data until backend is connected
+          // This should be replaced with the actual API call when ready
+          // const response = await productsAPI.getUserProducts(token);
+          
+          // Using local products data for demo
+          // In a real app, this would filter by the logged-in user's ID from the API
+          const mockUserProducts = []; // This would be populated from your API
+          setUserProducts(mockUserProducts);
+        }
+      } catch (err) {
+        console.error('Failed to fetch user products:', err);
+        setError('Failed to load your products. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchUserProducts();
+  }, [token]);
+  
+  // Handle product deletion
+  const handleDeleteProduct = async (productId: number) => {
+    if (window.confirm('Are you sure you want to delete this product?')) {
+      try {
+        if (token) {
+          // For now, this is mocked
+          // await productsAPI.deleteProduct(productId.toString(), token);
+          
+          // Update local state to remove the product
+          setUserProducts(userProducts.filter(product => product.id !== productId));
+        }
+      } catch (err) {
+        console.error('Failed to delete product:', err);
+        alert('Failed to delete the product. Please try again.');
+      }
+    }
   };
   
   return (
     <div className={`${theme}-mode`}>
       <div className="container section">
         <h1 className="page-title">Seller Dashboard</h1>
+        
+        {error && (
+          <div style={{
+            backgroundColor: '#ffebee',
+            color: '#f44336',
+            padding: '0.75rem',
+            borderRadius: '4px',
+            marginBottom: '1.5rem',
+            fontSize: '0.9rem'
+          }}>
+            {error}
+          </div>
+        )}
         
         {/* Stats cards */}
         <div style={{
@@ -132,7 +201,11 @@ const Dashboard: React.FC = () => {
               </Link>
             </div>
             
-            {sellerProducts.length > 0 ? (
+            {loading ? (
+              <div style={{ textAlign: 'center', padding: '2rem' }}>
+                Loading your products...
+              </div>
+            ) : userProducts.length > 0 ? (
               <div style={{ overflowX: 'auto' }}>
                 <table style={{
                   width: '100%',
@@ -151,7 +224,7 @@ const Dashboard: React.FC = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {sellerProducts.map(product => (
+                    {userProducts.map(product => (
                       <tr key={product.id} style={{
                         borderBottom: `1px solid ${theme === 'light' ? '#e0e0e0' : '#333333'}`,
                       }}>
@@ -187,6 +260,19 @@ const Dashboard: React.FC = () => {
                             >
                               View
                             </Link>
+                            <Link 
+                              to={`/edit-product/${product.id}`}
+                              style={{
+                                backgroundColor: 'var(--accent)',
+                                color: 'white',
+                                padding: '0.5rem 0.75rem',
+                                borderRadius: '4px',
+                                textDecoration: 'none',
+                                fontSize: '0.85rem',
+                              }}
+                            >
+                              Edit
+                            </Link>
                             <button 
                               style={{
                                 backgroundColor: '#f44336',
@@ -197,7 +283,7 @@ const Dashboard: React.FC = () => {
                                 cursor: 'pointer',
                                 fontSize: '0.85rem',
                               }}
-                              onClick={() => alert('Delete functionality would be implemented here')}
+                              onClick={() => handleDeleteProduct(product.id)}
                             >
                               Delete
                             </button>
