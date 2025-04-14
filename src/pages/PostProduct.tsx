@@ -3,11 +3,23 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ThemeContext } from '../context/ThemeContext';
 
-const PostProduct = () => {
+interface FormData {
+  title: string;
+  price: string;
+  category: string;
+  description: string;
+  image: File | null;
+}
+
+interface FormErrors {
+  [key: string]: string;
+}
+
+const PostProduct: React.FC = () => {
   const { theme } = useContext(ThemeContext);
   const navigate = useNavigate();
   
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     title: '',
     price: '',
     category: '',
@@ -15,14 +27,14 @@ const PostProduct = () => {
     image: null,
   });
   
-  const [errors, setErrors] = useState({});
-  const [previewUrl, setPreviewUrl] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [previewUrl, setPreviewUrl] = useState<string>('');
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
   
   const categories = ['Electronics', 'Fashion', 'Vehicles', 'Real Estate', 'Furniture', 'Jobs'];
   
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -38,8 +50,8 @@ const PostProduct = () => {
     }
   };
   
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (file) {
       setFormData({
         ...formData,
@@ -49,7 +61,9 @@ const PostProduct = () => {
       // Create a preview URL
       const fileReader = new FileReader();
       fileReader.onload = () => {
-        setPreviewUrl(fileReader.result);
+        if (typeof fileReader.result === 'string') {
+          setPreviewUrl(fileReader.result);
+        }
       };
       fileReader.readAsDataURL(file);
       
@@ -64,7 +78,7 @@ const PostProduct = () => {
   };
   
   const validateForm = () => {
-    const newErrors = {};
+    const newErrors: FormErrors = {};
     
     if (!formData.title.trim()) {
       newErrors.title = 'Title is required';
@@ -94,7 +108,7 @@ const PostProduct = () => {
     return Object.keys(newErrors).length === 0;
   };
   
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     if (validateForm()) {
