@@ -2,24 +2,16 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ThemeContext } from '../context/ThemeContext';
+import { useProducts } from '../context/ProductContext';
+import { useAuth } from '../context/AuthContext';
 
-interface FormData {
-  title: string;
-  price: string;
-  category: string;
-  description: string;
-  image: File | null;
-}
-
-interface FormErrors {
-  [key: string]: string;
-}
-
-const PostProduct: React.FC = () => {
+const PostProduct = () => {
   const { theme } = useContext(ThemeContext);
+  const { addProduct } = useProducts();
+  const { user } = useAuth();
   const navigate = useNavigate();
   
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState({
     title: '',
     price: '',
     category: '',
@@ -27,14 +19,14 @@ const PostProduct: React.FC = () => {
     image: null,
   });
   
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [previewUrl, setPreviewUrl] = useState<string>('');
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const [errors, setErrors] = useState({});
+  const [previewUrl, setPreviewUrl] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   
   const categories = ['Electronics', 'Fashion', 'Vehicles', 'Real Estate', 'Furniture', 'Jobs'];
   
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -50,7 +42,7 @@ const PostProduct: React.FC = () => {
     }
   };
   
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = (e) => {
     const file = e.target.files?.[0];
     if (file) {
       setFormData({
@@ -78,7 +70,7 @@ const PostProduct: React.FC = () => {
   };
   
   const validateForm = () => {
-    const newErrors: FormErrors = {};
+    const newErrors = {};
     
     if (!formData.title.trim()) {
       newErrors.title = 'Title is required';
@@ -108,13 +100,31 @@ const PostProduct: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     
     if (validateForm()) {
       setIsSubmitting(true);
       
-      // In a real app, this would be an API call to save the product
+      const newProduct = {
+        id: Date.now(),
+        title: formData.title,
+        price: parseFloat(formData.price),
+        category: formData.category,
+        description: formData.description,
+        image: previewUrl,
+        seller: {
+          id: user?.id || 'anonymous',
+          name: user?.name || 'Anonymous',
+          location: 'Lagos, Nigeria',
+          phone: '+234 123 456 7890'
+        },
+        isUserProduct: true
+      };
+      
+      // Add product to context
+      addProduct(newProduct);
+      
       setTimeout(() => {
         setIsSubmitting(false);
         setIsSuccess(true);

@@ -1,26 +1,8 @@
 
-import React, { createContext, useState, useEffect, ReactNode } from 'react';
-
-// Define types for our context
-interface User {
-  id: string;
-  name: string;
-  email: string;
-}
-
-interface AuthContextType {
-  user: User | null;
-  token: string | null;
-  isAuthenticated: boolean;
-  loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string) => Promise<void>;
-  logout: () => void;
-  error: string | null;
-}
+import React, { createContext, useState, useEffect } from 'react';
 
 // Create the context with a default value
-export const AuthContext = createContext<AuthContextType>({
+export const AuthContext = createContext({
   user: null,
   token: null,
   isAuthenticated: false,
@@ -32,15 +14,11 @@ export const AuthContext = createContext<AuthContextType>({
 });
 
 // Provider component
-interface AuthProviderProps {
-  children: ReactNode;
-}
-
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null);
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
 
   // Check if user is already logged in (token in localStorage)
   useEffect(() => {
@@ -56,7 +34,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   // Login function - will connect to backend later
-  const login = async (email: string, password: string) => {
+  const login = async (email, password) => {
     try {
       setLoading(true);
       setError(null);
@@ -82,7 +60,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   // Register function
-  const register = async (name: string, email: string, password: string) => {
+  const register = async (name, email, password) => {
     try {
       setLoading(true);
       setError(null);

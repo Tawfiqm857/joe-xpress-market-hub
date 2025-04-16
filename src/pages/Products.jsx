@@ -2,16 +2,18 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import { ThemeContext } from '../context/ThemeContext';
+import { useProducts } from '../context/ProductContext';
 import ProductCard from '../components/ProductCard';
 import SearchBar from '../components/SearchBar';
-import products from '../data/products';
 
-const Products: React.FC = () => {
+const Products = () => {
   const { theme } = useContext(ThemeContext);
+  const { products, userProducts } = useProducts();
   const location = useLocation();
-  const [filteredProducts, setFilteredProducts] = useState(products);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [showMyProducts, setShowMyProducts] = useState(false);
   
   // Extract search and category params from URL
   useEffect(() => {
@@ -28,9 +30,9 @@ const Products: React.FC = () => {
     }
   }, [location.search]);
   
-  // Filter products based on search query and selected category
+  // Filter products based on search query, selected category, and my products filter
   useEffect(() => {
-    let result = products;
+    let result = showMyProducts ? userProducts : products;
     
     if (searchQuery) {
       result = result.filter(product => 
@@ -46,7 +48,7 @@ const Products: React.FC = () => {
     }
     
     setFilteredProducts(result);
-  }, [searchQuery, selectedCategory]);
+  }, [searchQuery, selectedCategory, products, userProducts, showMyProducts]);
   
   const categories = ['All', 'Electronics', 'Fashion', 'Vehicles', 'Real Estate', 'Furniture'];
   
@@ -61,34 +63,58 @@ const Products: React.FC = () => {
         
         <div style={{ 
           display: 'flex',
+          justifyContent: 'space-between',
           alignItems: 'center',
-          marginBottom: '2rem',
-          overflowX: 'auto',
-          paddingBottom: '0.5rem',
+          marginBottom: '1rem',
+          flexWrap: 'wrap',
         }}>
-          <span style={{ marginRight: '1rem', fontWeight: '500' }}>Categories:</span>
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
-            {categories.map(category => (
-              <button 
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                style={{
-                  padding: '0.5rem 1rem',
-                  borderRadius: '2rem',
-                  border: 'none',
-                  backgroundColor: selectedCategory === category 
-                    ? 'var(--accent)' 
-                    : theme === 'light' ? '#e0e0e0' : '#333',
-                  color: selectedCategory === category 
-                    ? 'white' 
-                    : theme === 'light' ? 'var(--text-dark)' : 'var(--text-light)',
-                  cursor: 'pointer',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {category}
-              </button>
-            ))}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            overflowX: 'auto',
+            paddingBottom: '0.5rem',
+          }}>
+            <span style={{ marginRight: '1rem', fontWeight: '500' }}>Categories:</span>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              {categories.map(category => (
+                <button 
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  style={{
+                    padding: '0.5rem 1rem',
+                    borderRadius: '2rem',
+                    border: 'none',
+                    backgroundColor: selectedCategory === category 
+                      ? 'var(--accent)' 
+                      : theme === 'light' ? '#e0e0e0' : '#333',
+                    color: selectedCategory === category 
+                      ? 'white' 
+                      : theme === 'light' ? 'var(--text-dark)' : 'var(--text-light)',
+                    cursor: 'pointer',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+          </div>
+          
+          <div style={{ marginTop: '1rem', marginLeft: '1rem' }}>
+            <label style={{ 
+              display: 'flex', 
+              alignItems: 'center',
+              cursor: 'pointer',
+              userSelect: 'none',
+            }}>
+              <input 
+                type="checkbox" 
+                checked={showMyProducts} 
+                onChange={() => setShowMyProducts(!showMyProducts)} 
+                style={{ marginRight: '0.5rem' }}
+              />
+              Show only my products
+            </label>
           </div>
         </div>
         
