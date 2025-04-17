@@ -1,5 +1,6 @@
 
 import React, { createContext, useState, useEffect } from 'react';
+import { authAPI } from '../services/api';
 
 // Create the context with a default value
 export const AuthContext = createContext({
@@ -33,27 +34,44 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  // Login function - will connect to backend later
+  // Login function
   const login = async (email, password) => {
     try {
       setLoading(true);
       setError(null);
       
-      // For now, we'll simulate a successful login with mock data
-      // In a real app, this would be an API call to your backend
-      const mockUser = { id: '123', name: 'Test User', email };
-      const mockToken = 'mock-jwt-token';
+      // Get registered users from localStorage
+      const registeredUsers = JSON.parse(localStorage.getItem('joeXpressUsers') || '[]');
+      
+      // Find user with matching email and password
+      const matchedUser = registeredUsers.find(
+        user => user.email === email && user.password === password
+      );
+      
+      if (!matchedUser) {
+        throw new Error('Invalid email or password');
+      }
+      
+      // Create user object without password
+      const userWithoutPassword = {
+        id: matchedUser.id,
+        name: matchedUser.name,
+        email: matchedUser.email
+      };
       
       // Store in localStorage
+      const mockToken = `user-${Date.now()}`;
       localStorage.setItem('joeXpressToken', mockToken);
-      localStorage.setItem('joeXpressUser', JSON.stringify(mockUser));
+      localStorage.setItem('joeXpressUser', JSON.stringify(userWithoutPassword));
       
       // Update state
-      setUser(mockUser);
+      setUser(userWithoutPassword);
       setToken(mockToken);
+      return { success: true };
     } catch (err) {
-      setError('Login failed. Please check your credentials.');
+      setError(err.message || 'Login failed. Please check your credentials.');
       console.error('Login error:', err);
+      return { success: false, error: err.message };
     } finally {
       setLoading(false);
     }
@@ -65,20 +83,46 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
       setError(null);
       
-      // For now, simulate a successful registration
-      const mockUser = { id: '123', name, email };
-      const mockToken = 'mock-jwt-token';
+      // Get registered users from localStorage
+      const registeredUsers = JSON.parse(localStorage.getItem('joeXpressUsers') || '[]');
       
-      // Store in localStorage
+      // Check if email already exists
+      if (registeredUsers.some(user => user.email === email)) {
+        throw new Error('Email already registered');
+      }
+      
+      // Create new user
+      const newUser = {
+        id: `user-${Date.now()}`,
+        name,
+        email,
+        password // Store password for login verification
+      };
+      
+      // Add to registered users
+      registeredUsers.push(newUser);
+      localStorage.setItem('joeXpressUsers', JSON.stringify(registeredUsers));
+      
+      // Create user object without password
+      const userWithoutPassword = {
+        id: newUser.id,
+        name: newUser.name,
+        email: newUser.email
+      };
+      
+      // Store in localStorage for current session
+      const mockToken = `user-${Date.now()}`;
       localStorage.setItem('joeXpressToken', mockToken);
-      localStorage.setItem('joeXpressUser', JSON.stringify(mockUser));
+      localStorage.setItem('joeXpressUser', JSON.stringify(userWithoutPassword));
       
       // Update state
-      setUser(mockUser);
+      setUser(userWithoutPassword);
       setToken(mockToken);
+      return { success: true };
     } catch (err) {
-      setError('Registration failed. Please try again.');
+      setError(err.message || 'Registration failed. Please try again.');
       console.error('Registration error:', err);
+      return { success: false, error: err.message };
     } finally {
       setLoading(false);
     }

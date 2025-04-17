@@ -24,6 +24,7 @@ const Register: React.FC = () => {
   });
   
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [registerError, setRegisterError] = useState('');
   
   // Redirect if already logged in
   useEffect(() => {
@@ -78,6 +79,10 @@ const Register: React.FC = () => {
     if (formErrors[name as keyof typeof formErrors]) {
       setFormErrors({ ...formErrors, [name]: '' });
     }
+    // Clear registration error when user makes changes
+    if (registerError) {
+      setRegisterError('');
+    }
   };
   
   const handleSubmit = async (e: React.FormEvent) => {
@@ -87,9 +92,13 @@ const Register: React.FC = () => {
       setIsSubmitting(true);
       
       try {
-        await register(formData.name, formData.email, formData.password);
+        const result = await register(formData.name, formData.email, formData.password);
+        if (!result.success) {
+          setRegisterError(result.error || 'Registration failed. Please try again.');
+        }
         // If successful, useEffect will handle redirect
-      } catch (err) {
+      } catch (err: any) {
+        setRegisterError(err.message || 'An unexpected error occurred');
         console.error('Registration submission error:', err);
       } finally {
         setIsSubmitting(false);
@@ -111,7 +120,7 @@ const Register: React.FC = () => {
           boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05)',
           border: `1px solid ${theme === 'light' ? '#e0e0e0' : '#333333'}`,
         }}>
-          {error && (
+          {(error || registerError) && (
             <div style={{
               backgroundColor: '#ffebee',
               color: '#f44336',
@@ -120,7 +129,7 @@ const Register: React.FC = () => {
               marginBottom: '1.5rem',
               fontSize: '0.9rem'
             }}>
-              {error}
+              {registerError || error}
             </div>
           )}
           

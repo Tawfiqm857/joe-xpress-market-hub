@@ -20,6 +20,7 @@ const Login: React.FC = () => {
   });
   
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loginError, setLoginError] = useState('');
   
   // Redirect if already logged in
   useEffect(() => {
@@ -56,6 +57,10 @@ const Login: React.FC = () => {
     if (formErrors[name as keyof typeof formErrors]) {
       setFormErrors({ ...formErrors, [name]: '' });
     }
+    // Clear login error when user makes changes
+    if (loginError) {
+      setLoginError('');
+    }
   };
   
   const handleSubmit = async (e: React.FormEvent) => {
@@ -65,9 +70,13 @@ const Login: React.FC = () => {
       setIsSubmitting(true);
       
       try {
-        await login(formData.email, formData.password);
+        const result = await login(formData.email, formData.password);
+        if (!result.success) {
+          setLoginError(result.error || 'Invalid email or password');
+        }
         // If successful, useEffect will handle redirect
-      } catch (err) {
+      } catch (err: any) {
+        setLoginError(err.message || 'An unexpected error occurred');
         console.error('Login submission error:', err);
       } finally {
         setIsSubmitting(false);
@@ -89,7 +98,7 @@ const Login: React.FC = () => {
           boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05)',
           border: `1px solid ${theme === 'light' ? '#e0e0e0' : '#333333'}`,
         }}>
-          {error && (
+          {(error || loginError) && (
             <div style={{
               backgroundColor: '#ffebee',
               color: '#f44336',
@@ -98,7 +107,7 @@ const Login: React.FC = () => {
               marginBottom: '1.5rem',
               fontSize: '0.9rem'
             }}>
-              {error}
+              {loginError || error}
             </div>
           )}
           

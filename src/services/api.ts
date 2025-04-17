@@ -1,6 +1,4 @@
 
-import { useAuth } from '../context/AuthContext';
-
 // Base URL for your API - replace with your actual backend URL when deployed
 const API_BASE_URL = 'http://localhost:5000/api';
 
@@ -33,17 +31,46 @@ const handleApiError = (error: any) => {
 export const authAPI = {
   register: async (name: string, email: string, password: string) => {
     try {
-      // This is a mock for now - replace with actual API call
-      console.log('Register API call', { name, email, password });
-      return { success: true, data: { user: { id: '123', name, email }, token: 'mock-token' } };
+      // In a real application, this would be an API call to a backend server
+      // For now, we'll use localStorage for demo purposes
       
-      // Actual implementation would be:
-      // const response = await fetch(`${API_BASE_URL}/auth/register`, {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ name, email, password })
-      // });
-      // return await response.json();
+      // Get registered users from localStorage
+      const registeredUsers = JSON.parse(localStorage.getItem('joeXpressUsers') || '[]');
+      
+      // Check if email already exists
+      if (registeredUsers.some((user: any) => user.email === email)) {
+        return { 
+          success: false, 
+          error: 'Email already registered' 
+        };
+      }
+      
+      // Create new user
+      const newUser = {
+        id: `user-${Date.now()}`,
+        name,
+        email,
+        password // Store password for login verification
+      };
+      
+      // Add to registered users
+      registeredUsers.push(newUser);
+      localStorage.setItem('joeXpressUsers', JSON.stringify(registeredUsers));
+      
+      // Create user object without password for return
+      const userWithoutPassword = {
+        id: newUser.id,
+        name: newUser.name,
+        email: newUser.email
+      };
+      
+      return { 
+        success: true, 
+        data: { 
+          user: userWithoutPassword, 
+          token: `token-${Date.now()}` 
+        } 
+      };
     } catch (error) {
       return handleApiError(error);
     }
@@ -51,17 +78,38 @@ export const authAPI = {
   
   login: async (email: string, password: string) => {
     try {
-      // This is a mock for now - replace with actual API call
-      console.log('Login API call', { email, password });
-      return { success: true, data: { user: { id: '123', name: 'Test User', email }, token: 'mock-token' } };
+      // In a real application, this would be an API call to a backend server
+      // For now, we'll use localStorage for demo purposes
       
-      // Actual implementation would be:
-      // const response = await fetch(`${API_BASE_URL}/auth/login`, {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ email, password })
-      // });
-      // return await response.json();
+      // Get registered users from localStorage
+      const registeredUsers = JSON.parse(localStorage.getItem('joeXpressUsers') || '[]');
+      
+      // Find user with matching email and password
+      const matchedUser = registeredUsers.find(
+        (user: any) => user.email === email && user.password === password
+      );
+      
+      if (!matchedUser) {
+        return { 
+          success: false, 
+          error: 'Invalid email or password' 
+        };
+      }
+      
+      // Create user object without password for return
+      const userWithoutPassword = {
+        id: matchedUser.id,
+        name: matchedUser.name,
+        email: matchedUser.email
+      };
+      
+      return { 
+        success: true, 
+        data: { 
+          user: userWithoutPassword, 
+          token: `token-${Date.now()}` 
+        } 
+      };
     } catch (error) {
       return handleApiError(error);
     }
