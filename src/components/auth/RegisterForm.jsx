@@ -1,8 +1,7 @@
 
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import FormError from './FormError';
 import { ThemeContext } from '../../context/ThemeContext';
 import { User, Mail, Lock, KeyRound } from 'lucide-react';
 import '../../styles/auth.css';
@@ -10,7 +9,6 @@ import '../../styles/auth.css';
 const RegisterForm = () => {
   const { theme } = React.useContext(ThemeContext);
   const { register, error: authError } = useAuth();
-  const navigate = useNavigate();
   
   const [formData, setFormData] = useState({
     name: '',
@@ -110,7 +108,7 @@ const RegisterForm = () => {
         </div>
       )}
       
-      <h2 className="auth-title animate-fade-in">Join Joe Express</h2>
+      <h2 className="auth-title animate-text-reveal">Join Joe Express</h2>
       
       <form className="auth-form" onSubmit={handleSubmit}>
         <div className="form-group animate-slide-right delay-100">

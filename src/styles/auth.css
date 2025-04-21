@@ -49,26 +49,29 @@
   border-radius: 4px;
   cursor: pointer;
   font-weight: 600;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .auth-submit:hover {
   background-color: var(--primary-dark);
+  transform: translateY(-2px);
 }
 
 .auth-submit:disabled {
   background-color: #cccccc;
   cursor: not-allowed;
+  transform: none;
 }
 
 .auth-link {
   color: var(--primary);
   text-decoration: none;
   font-weight: 500;
+  transition: color 0.3s ease;
 }
 
 .dark-mode .auth-link {
-  color: var(--text-light);
+  color: var(--accent);
 }
 
 .auth-link:hover {
@@ -84,4 +87,29 @@
   color: #f44336;
   font-size: 0.85rem;
   margin-top: 0.25rem;
+}
+
+/* Additional animation styles */
+.auth-container {
+  animation: authContainerFade 0.5s ease-out;
+}
+
+@keyframes authContainerFade {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.auth-title {
+  position: relative;
+  display: inline-block;
+}
+
+.auth-form .form-group {
+  margin-bottom: 1.5rem;
 }

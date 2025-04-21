@@ -74,80 +74,32 @@ const ProfileEditModal = ({ user, onClose }) => {
   }, []);
   
   return (
-    <div className="modal-overlay" style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 1000,
-      padding: '1rem'
-    }}>
-      <div className="modal-content" style={{
-        backgroundColor: 'var(--card-light)',
-        borderRadius: '8px',
-        width: '100%',
-        maxWidth: '500px',
-        maxHeight: '90vh',
-        overflow: 'auto',
-        padding: '2rem',
-        position: 'relative'
-      }}>
+    <div className="modal-overlay">
+      <div className="modal-content animate-fade-in">
         <button 
           className="modal-close" 
           onClick={onClose}
-          style={{
-            position: 'absolute',
-            top: '1rem',
-            right: '1rem',
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            fontSize: '1.5rem'
-          }}
         >
           <X size={24} />
         </button>
         
-        <h2 style={{ marginBottom: '1.5rem', textAlign: 'center' }}>Edit Profile</h2>
+        <h2 className="modal-title animate-text-reveal">Edit Profile</h2>
         
         <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: '1.5rem', textAlign: 'center' }}>
+          <div className="profile-image-container animate-fade-in delay-100">
             {preview ? (
               <img 
                 src={preview} 
                 alt="Profile" 
-                style={{
-                  width: '120px',
-                  height: '120px',
-                  borderRadius: '50%',
-                  objectFit: 'cover',
-                  margin: '0 auto 1rem',
-                  border: '3px solid var(--primary)'
-                }}
+                className="profile-image-preview"
               />
             ) : (
-              <div style={{
-                width: '120px',
-                height: '120px',
-                borderRadius: '50%',
-                backgroundColor: 'var(--primary-light)',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                margin: '0 auto 1rem',
-                fontSize: '2.5rem',
-                color: 'white'
-              }}>
+              <div className="profile-image-placeholder">
                 {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
               </div>
             )}
             
-            <label className="upload-label">
+            <label className="upload-label animate-fade-in delay-200">
               <Upload size={16} style={{ marginRight: '8px' }} />
               Upload Image
               <input 
@@ -159,7 +111,7 @@ const ProfileEditModal = ({ user, onClose }) => {
             </label>
           </div>
           
-          <div className="form-group">
+          <div className="form-group animate-slide-right delay-200">
             <label className="form-label">
               <User size={18} style={{ display: 'inline', marginRight: '8px' }} />
               Full Name
@@ -175,7 +127,7 @@ const ProfileEditModal = ({ user, onClose }) => {
             />
           </div>
           
-          <div className="form-group">
+          <div className="form-group animate-slide-right delay-300">
             <label className="form-label">
               <MapPin size={18} style={{ display: 'inline', marginRight: '8px' }} />
               Location
@@ -190,7 +142,7 @@ const ProfileEditModal = ({ user, onClose }) => {
             />
           </div>
           
-          <div className="form-group">
+          <div className="form-group animate-slide-right delay-400">
             <label className="form-label">
               <Phone size={18} style={{ display: 'inline', marginRight: '8px' }} />
               Phone Number
@@ -205,9 +157,9 @@ const ProfileEditModal = ({ user, onClose }) => {
             />
           </div>
           
-          <h3 style={{ marginTop: '1.5rem', marginBottom: '1rem' }}>Social Media</h3>
+          <h3 className="section-title animate-text-reveal delay-500">Social Media</h3>
           
-          <div className="form-group">
+          <div className="form-group animate-slide-right delay-500">
             <label className="form-label">
               <Facebook size={18} style={{ display: 'inline', marginRight: '8px' }} />
               Facebook
@@ -222,7 +174,7 @@ const ProfileEditModal = ({ user, onClose }) => {
             />
           </div>
           
-          <div className="form-group">
+          <div className="form-group animate-slide-right delay-500">
             <label className="form-label">
               <Twitter size={18} style={{ display: 'inline', marginRight: '8px' }} />
               Twitter
@@ -237,7 +189,7 @@ const ProfileEditModal = ({ user, onClose }) => {
             />
           </div>
           
-          <div className="form-group">
+          <div className="form-group animate-slide-right delay-500">
             <label className="form-label">
               <Instagram size={18} style={{ display: 'inline', marginRight: '8px' }} />
               Instagram
@@ -252,7 +204,7 @@ const ProfileEditModal = ({ user, onClose }) => {
             />
           </div>
           
-          <div className="form-group">
+          <div className="form-group animate-slide-right delay-500">
             <label className="form-label">
               <Linkedin size={18} style={{ display: 'inline', marginRight: '8px' }} />
               LinkedIn
@@ -267,34 +219,18 @@ const ProfileEditModal = ({ user, onClose }) => {
             />
           </div>
           
-          <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
+          <div className="form-actions animate-fade-in delay-600">
             <button
               type="button"
               onClick={onClose}
-              style={{
-                flex: 1,
-                padding: '0.75rem',
-                borderRadius: '4px',
-                border: '1px solid var(--border-light)',
-                background: 'transparent',
-                cursor: 'pointer'
-              }}
+              className="btn-cancel"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              style={{
-                flex: 1,
-                padding: '0.75rem',
-                borderRadius: '4px',
-                backgroundColor: 'var(--primary)',
-                color: 'white',
-                border: 'none',
-                cursor: 'pointer',
-                fontWeight: 600
-              }}
+              className="btn-save"
             >
               {isSubmitting ? 'Saving...' : 'Save Changes'}
             </button>

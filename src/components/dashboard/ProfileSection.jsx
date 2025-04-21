@@ -18,16 +18,16 @@ const ProfileSection = () => {
     <div className="profile-section animate-fade-in">
       <div className="avatar-container">
         {user.profilePicture ? (
-          <img src={user.profilePicture} alt={user.name} className="profile-avatar" />
+          <img src={user.profilePicture} alt={user.name} className="profile-avatar animate-fade-in" />
         ) : (
-          <div className="avatar-placeholder">
+          <div className="avatar-placeholder animate-fade-in">
             {getInitials(user.name)}
           </div>
         )}
       </div>
       
       <div className="profile-details">
-        <h2 className="profile-name animate-slide-right">{user.name}</h2>
+        <h2 className="profile-name animate-text-reveal">{user.name}</h2>
         <p className="profile-info animate-slide-right delay-100">
           <User size={18} />
           {user.email}

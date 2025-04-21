@@ -2,8 +2,10 @@
 import React, { useState } from 'react';
 import FormField from './FormField';
 import ImagePreview from './ImagePreview';
+import { ThemeContext } from '../../context/ThemeContext';
 
-const ProductForm = ({ theme, onSubmit, isSubmitting }) => {
+const ProductForm = ({ onSubmit, isSubmitting }) => {
+  const { theme } = React.useContext(ThemeContext);
   const [formData, setFormData] = useState({
     title: '',
     price: '',
@@ -103,17 +105,10 @@ const ProductForm = ({ theme, onSubmit, isSubmitting }) => {
   };
   
   return (
-    <div style={{
-      maxWidth: '700px',
-      margin: '0 auto',
-      backgroundColor: theme === 'light' ? 'white' : '#1e1e1e',
-      borderRadius: '8px',
-      padding: '2rem',
-      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05)',
-      border: `1px solid ${theme === 'light' ? '#e0e0e0' : '#333333'}`,
-    }}>
-      <form onSubmit={handleSubmit}>
-        <FormField label="Product Title" id="title" error={errors.title}>
+    <div className="product-form-container animate-fade-in">
+      <form onSubmit={handleSubmit} className="product-form">
+        <div className="form-group animate-slide-right delay-100">
+          <label htmlFor="title" className="form-label">Product Title</label>
           <input
             type="text"
             id="title"
@@ -123,9 +118,11 @@ const ProductForm = ({ theme, onSubmit, isSubmitting }) => {
             onChange={handleInputChange}
             placeholder="e.g., Samsung Galaxy S21"
           />
-        </FormField>
+          {errors.title && <div className="input-error">{errors.title}</div>}
+        </div>
         
-        <FormField label="Price (NGN)" id="price" error={errors.price}>
+        <div className="form-group animate-slide-right delay-200">
+          <label htmlFor="price" className="form-label">Price (NGN)</label>
           <input
             type="text"
             id="price"
@@ -135,9 +132,11 @@ const ProductForm = ({ theme, onSubmit, isSubmitting }) => {
             onChange={handleInputChange}
             placeholder="e.g., 150000"
           />
-        </FormField>
+          {errors.price && <div className="input-error">{errors.price}</div>}
+        </div>
         
-        <FormField label="Category" id="category" error={errors.category}>
+        <div className="form-group animate-slide-right delay-300">
+          <label htmlFor="category" className="form-label">Category</label>
           <select
             id="category"
             name="category"
@@ -150,9 +149,11 @@ const ProductForm = ({ theme, onSubmit, isSubmitting }) => {
               <option key={category} value={category}>{category}</option>
             ))}
           </select>
-        </FormField>
+          {errors.category && <div className="input-error">{errors.category}</div>}
+        </div>
         
-        <FormField label="Description" id="description" error={errors.description}>
+        <div className="form-group animate-slide-right delay-400">
+          <label htmlFor="description" className="form-label">Description</label>
           <textarea
             id="description"
             name="description"
@@ -161,34 +162,27 @@ const ProductForm = ({ theme, onSubmit, isSubmitting }) => {
             onChange={handleInputChange}
             placeholder="Describe your product in detail..."
             rows={5}
-            style={{ resize: 'vertical' }}
           ></textarea>
-        </FormField>
+          {errors.description && <div className="input-error">{errors.description}</div>}
+        </div>
         
-        <FormField label="Product Image" id="image" error={errors.image}>
+        <div className="form-group animate-slide-right delay-500">
+          <label htmlFor="image" className="form-label">Product Image</label>
           <input
             type="file"
             id="image"
             name="image"
             accept="image/*"
             onChange={handleImageChange}
-            style={{
-              display: 'block',
-              width: '100%',
-              padding: '0.75rem',
-              marginBottom: '0.5rem',
-              backgroundColor: theme === 'light' ? '#f5f5f5' : '#252525',
-              borderRadius: '8px',
-              border: `1px solid ${theme === 'light' ? '#e0e0e0' : '#333333'}`,
-            }}
+            className="form-control-file"
           />
-          <ImagePreview previewUrl={previewUrl} theme={theme} />
-        </FormField>
+          {previewUrl && <ImagePreview previewUrl={previewUrl} theme={theme} />}
+          {errors.image && <div className="input-error">{errors.image}</div>}
+        </div>
         
         <button 
           type="submit"
-          className="btn btn-primary"
-          style={{ width: '100%' }}
+          className="product-submit btn btn-primary animate-fade-in delay-600"
           disabled={isSubmitting}
         >
           {isSubmitting ? 'Posting...' : 'Post Product'}

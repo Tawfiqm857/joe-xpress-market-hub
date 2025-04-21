@@ -39,7 +39,7 @@ const Dashboard = () => {
   return (
     <div className={`${theme}-mode`}>
       <div className="container section">
-        <h1 className="page-title animate-fade-in">Seller Dashboard</h1>
+        <h1 className="page-title animate-text-reveal">Seller Dashboard</h1>
         
         {/* Profile Section */}
         <ProfileSection />

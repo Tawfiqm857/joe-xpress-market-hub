@@ -1,9 +1,7 @@
 
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import FormInput from './FormInput';
-import FormError from './FormError';
 import { User, Lock } from 'lucide-react';
 import '../../styles/auth.css';
 import { ThemeContext } from '../../context/ThemeContext';
@@ -11,7 +9,6 @@ import { ThemeContext } from '../../context/ThemeContext';
 const LoginForm = () => {
   const { theme } = React.useContext(ThemeContext);
   const { login, error: authError } = useAuth();
-  const navigate = useNavigate();
   
   const [formData, setFormData] = useState({
     email: '',
@@ -89,7 +86,7 @@ const LoginForm = () => {
         </div>
       )}
       
-      <h2 className="auth-title animate-fade-in">Welcome Back</h2>
+      <h2 className="auth-title animate-text-reveal">Welcome Back</h2>
       
       <form className="auth-form" onSubmit={handleSubmit}>
         <div className="form-group animate-slide-right delay-100">
