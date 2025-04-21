@@ -38,7 +38,7 @@ const App = () => {
                     <PostProduct />
                   </ProtectedRoute>
                 } />
-                <Route path="/dashboard" element={
+                <Route path="/dashboard/*" element={
                   <ProtectedRoute>
                     <Dashboard />
                   </ProtectedRoute>
@@ -47,7 +47,7 @@ const App = () => {
               </Routes>
             </main>
             <Footer />
-            <Toaster position="top-right" closeButton />
+            <Toaster position="top-right" closeButton richColors />
           </ProductProvider>
         </AuthProvider>
       </BrowserRouter>

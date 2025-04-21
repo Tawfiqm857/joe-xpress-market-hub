@@ -16,25 +16,36 @@ export const ProductContext = createContext({
 
 export const ProductProvider = ({ children }) => {
   const { user } = useAuth();
-  const [products, setProducts] = useState(defaultProducts);
+  const [products, setProducts] = useState([]);
   const [userProducts, setUserProducts] = useState([]);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   // Load any saved products from localStorage
   useEffect(() => {
-    const savedProducts = localStorage.getItem('joeXpressProducts');
-    if (savedProducts) {
-      try {
-        const parsedProducts = JSON.parse(savedProducts);
-        setProducts([...defaultProducts, ...parsedProducts]);
-      } catch (error) {
-        console.error('Error parsing saved products:', error);
+    const loadProducts = () => {
+      const savedProducts = localStorage.getItem('joeXpressProducts');
+      let customProducts = [];
+      
+      if (savedProducts) {
+        try {
+          customProducts = JSON.parse(savedProducts);
+        } catch (error) {
+          console.error('Error parsing saved products:', error);
+          customProducts = [];
+        }
       }
-    }
+      
+      // Combine default products with custom products
+      setProducts([...defaultProducts, ...customProducts]);
+      setIsLoaded(true);
+    };
+    
+    loadProducts();
   }, []);
 
   // Update userProducts whenever user or products change
   useEffect(() => {
-    if (user) {
+    if (user && products.length > 0) {
       const userProds = products.filter(product => 
         product.seller?.id === user.id || product.isUserProduct
       );
@@ -97,7 +108,8 @@ export const ProductProvider = ({ children }) => {
         addProduct,
         updateProduct,
         deleteProduct,
-        getProductById
+        getProductById,
+        isLoaded
       }}
     >
       {children}

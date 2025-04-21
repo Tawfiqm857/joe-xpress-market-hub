@@ -34,7 +34,8 @@ const PostProduct = () => {
         location: user?.location || 'Lagos, Nigeria',
         phone: user?.phone || '+234 123 456 7890'
       },
-      isUserProduct: true
+      isUserProduct: true,
+      createdAt: new Date().toISOString()
     };
     
     // Add product to context

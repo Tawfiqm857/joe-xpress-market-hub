@@ -1,14 +1,15 @@
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { User, Lock } from 'lucide-react';
 import '../../styles/auth.css';
 import { ThemeContext } from '../../context/ThemeContext';
 
-const LoginForm = () => {
+const LoginForm = ({ redirectPath = '/dashboard' }) => {
   const { theme } = React.useContext(ThemeContext);
   const { login, error: authError } = useAuth();
+  const navigate = useNavigate();
   
   const [formData, setFormData] = useState({
     email: '',
@@ -65,10 +66,12 @@ const LoginForm = () => {
       
       try {
         const result = await login(formData.email, formData.password);
-        if (!result.success) {
+        if (result.success) {
+          // Redirect to the requested page after successful login
+          navigate(redirectPath, { replace: true });
+        } else {
           setLoginError(result.error || 'Invalid email or password');
         }
-        // If successful, useEffect will handle redirect
       } catch (err) {
         setLoginError(err.message || 'An unexpected error occurred');
         console.error('Login submission error:', err);

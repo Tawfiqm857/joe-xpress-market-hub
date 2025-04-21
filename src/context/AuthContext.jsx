@@ -26,15 +26,28 @@ export const AuthProvider = ({ children }) => {
 
   // Check if user is already logged in (token in localStorage)
   useEffect(() => {
-    const storedToken = localStorage.getItem('joeXpressToken');
-    const storedUser = localStorage.getItem('joeXpressUser');
+    const checkAuth = async () => {
+      try {
+        const storedToken = localStorage.getItem('joeXpressToken');
+        const storedUser = localStorage.getItem('joeXpressUser');
+        
+        if (storedToken && storedUser) {
+          // Verify token validity (in a real app, this would make an API call)
+          setToken(storedToken);
+          setUser(JSON.parse(storedUser));
+          console.log('User authenticated from stored session');
+        }
+      } catch (error) {
+        console.error('Session verification error:', error);
+        // Clear invalid session data
+        localStorage.removeItem('joeXpressToken');
+        localStorage.removeItem('joeXpressUser');
+      } finally {
+        setLoading(false);
+      }
+    };
     
-    if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
-    }
-    
-    setLoading(false);
+    checkAuth();
   }, []);
 
   // Login function
@@ -67,7 +80,7 @@ export const AuthProvider = ({ children }) => {
       };
       
       // Store in localStorage
-      const mockToken = `user-${Date.now()}`;
+      const mockToken = `user-token-${Date.now()}`;
       localStorage.setItem('joeXpressToken', mockToken);
       localStorage.setItem('joeXpressUser', JSON.stringify(userWithoutPassword));
       
@@ -133,7 +146,7 @@ export const AuthProvider = ({ children }) => {
       };
       
       // Store in localStorage for current session
-      const mockToken = `user-${Date.now()}`;
+      const mockToken = `user-token-${Date.now()}`;
       localStorage.setItem('joeXpressToken', mockToken);
       localStorage.setItem('joeXpressUser', JSON.stringify(userWithoutPassword));
       
