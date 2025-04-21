@@ -1,51 +1,24 @@
 
-import React, { useContext } from 'react';
-import { ThemeContext } from '../../context/ThemeContext';
+import React from 'react';
+import { Package, MessageSquare } from 'lucide-react';
+import '../../styles/dashboard.css';
 
 const TabNavigation = ({ activeTab, setActiveTab }) => {
-  const { theme } = useContext(ThemeContext);
-  
   return (
-    <div style={{
-      display: 'flex',
-      borderBottom: `1px solid ${theme === 'light' ? '#e0e0e0' : '#333333'}`,
-      marginBottom: '2rem',
-    }}>
-      <button 
+    <div className="tab-nav animate-fade-in">
+      <button
+        className={`tab-button ${activeTab === 'products' ? 'active' : ''}`}
         onClick={() => setActiveTab('products')}
-        style={{
-          padding: '1rem 1.5rem',
-          backgroundColor: 'transparent',
-          border: 'none',
-          borderBottom: activeTab === 'products' 
-            ? `2px solid var(--accent)` 
-            : 'none',
-          color: activeTab === 'products' 
-            ? 'var(--accent)' 
-            : theme === 'light' ? 'var(--text-dark)' : 'var(--text-light)',
-          fontWeight: activeTab === 'products' ? 'bold' : 'normal',
-          cursor: 'pointer',
-        }}
       >
+        <Package size={18} style={{ display: 'inline', marginRight: '8px' }} />
         My Products
       </button>
       
-      <button 
+      <button
+        className={`tab-button ${activeTab === 'messages' ? 'active' : ''}`}
         onClick={() => setActiveTab('messages')}
-        style={{
-          padding: '1rem 1.5rem',
-          backgroundColor: 'transparent',
-          border: 'none',
-          borderBottom: activeTab === 'messages' 
-            ? `2px solid var(--accent)` 
-            : 'none',
-          color: activeTab === 'messages' 
-            ? 'var(--accent)' 
-            : theme === 'light' ? 'var(--text-dark)' : 'var(--text-light)',
-          fontWeight: activeTab === 'messages' ? 'bold' : 'normal',
-          cursor: 'pointer',
-        }}
       >
+        <MessageSquare size={18} style={{ display: 'inline', marginRight: '8px' }} />
         Messages
       </button>
     </div>

@@ -7,6 +7,9 @@ import DashboardStats from '../components/dashboard/DashboardStats';
 import TabNavigation from '../components/dashboard/TabNavigation';
 import ProductsContent from '../components/dashboard/ProductsContent';
 import MessagesContent from '../components/dashboard/MessagesContent';
+import ProfileSection from '../components/dashboard/ProfileSection';
+import '../styles/main.css';
+import '../styles/dashboard.css';
 
 const Dashboard = () => {
   const { theme } = useContext(ThemeContext);
@@ -36,7 +39,10 @@ const Dashboard = () => {
   return (
     <div className={`${theme}-mode`}>
       <div className="container section">
-        <h1 className="page-title">Seller Dashboard</h1>
+        <h1 className="page-title animate-fade-in">Seller Dashboard</h1>
+        
+        {/* Profile Section */}
+        <ProfileSection />
         
         {/* Stats Cards */}
         <DashboardStats stats={stats} />

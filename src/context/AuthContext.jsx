@@ -1,6 +1,7 @@
 
 import React, { createContext, useState, useEffect } from 'react';
-import { authAPI } from '../services/api';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 // Create the context with a default value
 export const AuthContext = createContext({
@@ -11,6 +12,7 @@ export const AuthContext = createContext({
   login: async () => {},
   register: async () => {},
   logout: () => {},
+  updateProfile: () => {},
   error: null
 });
 
@@ -20,6 +22,7 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   // Check if user is already logged in (token in localStorage)
   useEffect(() => {
@@ -56,7 +59,11 @@ export const AuthProvider = ({ children }) => {
       const userWithoutPassword = {
         id: matchedUser.id,
         name: matchedUser.name,
-        email: matchedUser.email
+        email: matchedUser.email,
+        profilePicture: matchedUser.profilePicture || null,
+        location: matchedUser.location || null,
+        phone: matchedUser.phone || null,
+        socials: matchedUser.socials || {}
       };
       
       // Store in localStorage
@@ -67,10 +74,12 @@ export const AuthProvider = ({ children }) => {
       // Update state
       setUser(userWithoutPassword);
       setToken(mockToken);
+      toast.success('Login successful!');
       return { success: true };
     } catch (err) {
       setError(err.message || 'Login failed. Please check your credentials.');
       console.error('Login error:', err);
+      toast.error(err.message || 'Login failed');
       return { success: false, error: err.message };
     } finally {
       setLoading(false);
@@ -96,7 +105,16 @@ export const AuthProvider = ({ children }) => {
         id: `user-${Date.now()}`,
         name,
         email,
-        password // Store password for login verification
+        password, // Store password for login verification
+        profilePicture: null,
+        location: null,
+        phone: null,
+        socials: {
+          facebook: '',
+          twitter: '',
+          instagram: '',
+          linkedin: ''
+        }
       };
       
       // Add to registered users
@@ -107,7 +125,11 @@ export const AuthProvider = ({ children }) => {
       const userWithoutPassword = {
         id: newUser.id,
         name: newUser.name,
-        email: newUser.email
+        email: newUser.email,
+        profilePicture: newUser.profilePicture,
+        location: newUser.location,
+        phone: newUser.phone,
+        socials: newUser.socials
       };
       
       // Store in localStorage for current session
@@ -118,13 +140,71 @@ export const AuthProvider = ({ children }) => {
       // Update state
       setUser(userWithoutPassword);
       setToken(mockToken);
+      toast.success('Registration successful!');
       return { success: true };
     } catch (err) {
       setError(err.message || 'Registration failed. Please try again.');
       console.error('Registration error:', err);
+      toast.error(err.message || 'Registration failed');
       return { success: false, error: err.message };
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Update user profile
+  const updateProfile = (profileData) => {
+    try {
+      if (!user) {
+        throw new Error('No user is logged in');
+      }
+      
+      // Get registered users from localStorage
+      const registeredUsers = JSON.parse(localStorage.getItem('joeXpressUsers') || '[]');
+      
+      // Find current user
+      const currentUserIndex = registeredUsers.findIndex(u => u.id === user.id);
+      
+      if (currentUserIndex === -1) {
+        throw new Error('User not found');
+      }
+      
+      // Update user data, preserving password
+      const updatedUser = {
+        ...registeredUsers[currentUserIndex],
+        name: profileData.name || registeredUsers[currentUserIndex].name,
+        profilePicture: profileData.profilePicture || registeredUsers[currentUserIndex].profilePicture,
+        location: profileData.location || registeredUsers[currentUserIndex].location,
+        phone: profileData.phone || registeredUsers[currentUserIndex].phone,
+        socials: profileData.socials || registeredUsers[currentUserIndex].socials
+      };
+      
+      // Update in registered users
+      registeredUsers[currentUserIndex] = updatedUser;
+      localStorage.setItem('joeXpressUsers', JSON.stringify(registeredUsers));
+      
+      // Create user object without password
+      const userWithoutPassword = {
+        id: updatedUser.id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        profilePicture: updatedUser.profilePicture,
+        location: updatedUser.location,
+        phone: updatedUser.phone,
+        socials: updatedUser.socials
+      };
+      
+      // Update current user session
+      localStorage.setItem('joeXpressUser', JSON.stringify(userWithoutPassword));
+      
+      // Update state
+      setUser(userWithoutPassword);
+      toast.success('Profile updated successfully!');
+      return { success: true };
+    } catch (err) {
+      console.error('Profile update error:', err);
+      toast.error(err.message || 'Failed to update profile');
+      return { success: false, error: err.message };
     }
   };
 
@@ -134,6 +214,8 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('joeXpressUser');
     setUser(null);
     setToken(null);
+    toast.info('Logged out successfully');
+    navigate('/login');
   };
 
   return (
@@ -146,6 +228,7 @@ export const AuthProvider = ({ children }) => {
         login,
         register,
         logout,
+        updateProfile,
         error
       }}
     >

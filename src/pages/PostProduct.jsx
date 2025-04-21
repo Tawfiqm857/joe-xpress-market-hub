@@ -6,6 +6,8 @@ import { useProducts } from '../context/ProductContext';
 import { useAuth } from '../context/AuthContext';
 import ProductForm from '../components/product/ProductForm';
 import SuccessMessage from '../components/product/SuccessMessage';
+import '../styles/main.css';
+import '../styles/product.css';
 
 const PostProduct = () => {
   const { theme } = useContext(ThemeContext);
@@ -29,8 +31,8 @@ const PostProduct = () => {
       seller: {
         id: user?.id || 'anonymous',
         name: user?.name || 'Anonymous',
-        location: 'Lagos, Nigeria',
-        phone: '+234 123 456 7890'
+        location: user?.location || 'Lagos, Nigeria',
+        phone: user?.phone || '+234 123 456 7890'
       },
       isUserProduct: true
     };
@@ -52,13 +54,12 @@ const PostProduct = () => {
   return (
     <div className={`${theme}-mode`}>
       <div className="container section">
-        <h1 className="page-title">Post a Product</h1>
+        <h1 className="page-title animate-fade-in">Post a Product</h1>
         
         {isSuccess ? (
           <SuccessMessage />
         ) : (
           <ProductForm 
-            theme={theme} 
             onSubmit={handleSubmit} 
             isSubmitting={isSubmitting} 
           />

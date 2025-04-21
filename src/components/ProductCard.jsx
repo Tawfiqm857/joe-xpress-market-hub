@@ -3,85 +3,44 @@ import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { ThemeContext } from '../context/ThemeContext';
 import { formatPrice } from '../data/products';
+import { MapPin } from 'lucide-react';
+import '../styles/product.css';
 
 const ProductCard = ({ product }) => {
   const { theme } = useContext(ThemeContext);
   
   return (
-    <div className="card" style={{
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100%',
-    }}>
-      <Link to={`/product/${product.id}`} style={{ textDecoration: 'none' }}>
-        <div style={{ position: 'relative', paddingTop: '75%', overflow: 'hidden' }}>
-          <img 
-            src={product.image} 
-            alt={product.title}
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              transition: 'transform 0.3s ease',
-            }}
-            onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-            onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
-          />
-        </div>
+    <div className="product-card animate-fade-in">
+      <Link to={`/product/${product.id}`} className="product-image-container">
+        <img 
+          src={product.image} 
+          alt={product.title}
+          className="product-image"
+        />
       </Link>
       
-      <div style={{ padding: '1rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <div className="product-content">
         <Link 
           to={`/product/${product.id}`} 
-          style={{ 
-            textDecoration: 'none',
-            color: theme === 'light' ? 'var(--text-dark)' : 'var(--text-light)',
-          }}
+          className="product-title"
         >
-          <h3 style={{ 
-            fontSize: '1.1rem', 
-            fontWeight: 'bold',
-            marginBottom: '0.5rem',
-          }}>
-            {product.title}
-          </h3>
+          <h3>{product.title}</h3>
         </Link>
         
-        <p style={{ 
-          fontSize: '1.2rem', 
-          fontWeight: 'bold',
-          color: 'var(--accent)',
-          marginBottom: '0.5rem',
-        }}>
+        <p className="product-price">
           {formatPrice(product.price)}
         </p>
         
-        <div style={{ 
-          marginTop: 'auto',
-          fontSize: '0.9rem',
-          color: theme === 'light' ? 'rgba(0,0,0,0.6)' : 'rgba(255,255,255,0.6)',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}>
+        <div className="product-meta">
           <span>{product.category}</span>
-          <span>{product.seller.location}</span>
+          <span className="product-location">
+            <MapPin size={14} style={{ display: 'inline', marginRight: '4px' }} />
+            {product.seller.location}
+          </span>
         </div>
         
         {product.isUserProduct && (
-          <div style={{ 
-            marginTop: '0.5rem',
-            backgroundColor: 'var(--accent)',
-            color: 'white',
-            padding: '0.25rem 0.5rem',
-            borderRadius: '4px',
-            fontSize: '0.75rem',
-            display: 'inline-block',
-            alignSelf: 'flex-start'
-          }}>
+          <div className="product-tag">
             Your Post
           </div>
         )}

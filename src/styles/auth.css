@@ -1,0 +1,87 @@
+
+/* Styles for authentication pages */
+.auth-container {
+  max-width: 500px;
+  margin: 0 auto;
+  background-color: var(--background-light);
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode .auth-container {
+  background-color: var(--card-dark);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.auth-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: var(--primary);
+}
+
+.dark-mode .auth-title {
+  color: var(--text-light);
+}
+
+.auth-form {
+  width: 100%;
+}
+
+.auth-error {
+  background-color: #ffebee;
+  color: #f44336;
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.auth-submit {
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: 0.75rem;
+  background-color: var(--primary);
+  color: var(--text-light);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.auth-submit:hover {
+  background-color: var(--primary-dark);
+}
+
+.auth-submit:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.auth-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.dark-mode .auth-link {
+  color: var(--text-light);
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}
+
+.auth-alt {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.input-error {
+  color: #f44336;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}

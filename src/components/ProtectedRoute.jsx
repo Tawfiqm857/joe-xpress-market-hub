@@ -8,7 +8,16 @@ const ProtectedRoute = ({ children }) => {
   
   // Show loading state while checking authentication
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '100vh'
+      }}>
+        <div className="animate-fade-in">Loading...</div>
+      </div>
+    );
   }
   
   // Redirect to login if not authenticated

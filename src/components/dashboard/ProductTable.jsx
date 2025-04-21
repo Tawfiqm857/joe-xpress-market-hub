@@ -3,78 +3,51 @@ import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { ThemeContext } from '../../context/ThemeContext';
 import { formatPrice } from '../../data/products';
+import { Eye, Trash } from 'lucide-react';
+import '../../styles/dashboard.css';
 
 const ProductTable = ({ products, onDelete }) => {
   const { theme } = useContext(ThemeContext);
   
   return (
-    <div style={{ overflowX: 'auto' }}>
-      <table style={{
-        width: '100%',
-        borderCollapse: 'collapse',
-        fontSize: '0.95rem',
-      }}>
+    <div style={{ overflowX: 'auto' }} className="animate-fade-in">
+      <table className="products-table">
         <thead>
-          <tr style={{
-            backgroundColor: theme === 'light' ? '#f5f5f5' : '#252525',
-            textAlign: 'left',
-          }}>
-            <th style={{ padding: '1rem', borderBottom: `1px solid ${theme === 'light' ? '#e0e0e0' : '#333333'}` }}>Product</th>
-            <th style={{ padding: '1rem', borderBottom: `1px solid ${theme === 'light' ? '#e0e0e0' : '#333333'}` }}>Price</th>
-            <th style={{ padding: '1rem', borderBottom: `1px solid ${theme === 'light' ? '#e0e0e0' : '#333333'}` }}>Category</th>
-            <th style={{ padding: '1rem', borderBottom: `1px solid ${theme === 'light' ? '#e0e0e0' : '#333333'}` }}>Actions</th>
+          <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {products.map(product => (
-            <tr key={product.id} style={{
-              borderBottom: `1px solid ${theme === 'light' ? '#e0e0e0' : '#333333'}`,
-            }}>
-              <td style={{ padding: '1rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          {products.map((product, index) => (
+            <tr key={product.id} className={`animate-slide-right delay-${(index % 5) * 100}`}>
+              <td>
+                <div className="product-media">
                   <img 
                     src={product.image} 
                     alt={product.title}
-                    style={{
-                      width: '50px',
-                      height: '50px',
-                      objectFit: 'cover',
-                      borderRadius: '4px',
-                    }}
+                    className="table-image"
                   />
                   <span>{product.title}</span>
                 </div>
               </td>
-              <td style={{ padding: '1rem' }}>{formatPrice(product.price)}</td>
-              <td style={{ padding: '1rem' }}>{product.category}</td>
-              <td style={{ padding: '1rem' }}>
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <td>{formatPrice(product.price)}</td>
+              <td>{product.category}</td>
+              <td>
+                <div className="table-actions">
                   <Link 
                     to={`/product/${product.id}`}
-                    style={{
-                      backgroundColor: 'var(--primary)',
-                      color: 'white',
-                      padding: '0.5rem 0.75rem',
-                      borderRadius: '4px',
-                      textDecoration: 'none',
-                      fontSize: '0.85rem',
-                    }}
+                    className="btn-view"
                   >
-                    View
+                    <Eye size={16} />
                   </Link>
                   <button 
-                    style={{
-                      backgroundColor: '#f44336',
-                      color: 'white',
-                      padding: '0.5rem 0.75rem',
-                      borderRadius: '4px',
-                      border: 'none',
-                      cursor: 'pointer',
-                      fontSize: '0.85rem',
-                    }}
+                    className="btn-delete"
                     onClick={() => onDelete(product.id)}
                   >
-                    Delete
+                    <Trash size={16} />
                   </button>
                 </div>
               </td>

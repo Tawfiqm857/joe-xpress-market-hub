@@ -3,9 +3,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "./context/ThemeContext";
 import { AuthProvider } from "./context/AuthContext";
 import { ProductProvider } from "./context/ProductContext";
+import { Toaster } from "sonner";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ProtectedRoute from "./components/ProtectedRoute";
+import "./styles/main.css";
 
 // Pages
 import Index from "./pages/Index";
@@ -20,9 +22,9 @@ import NotFound from "./pages/NotFound";
 const App = () => {
   return (
     <ThemeProvider>
-      <AuthProvider>
-        <ProductProvider>
-          <BrowserRouter>
+      <BrowserRouter>
+        <AuthProvider>
+          <ProductProvider>
             <Navbar />
             <main style={{ minHeight: "calc(100vh - 100px)" }}>
               <Routes>
@@ -45,9 +47,10 @@ const App = () => {
               </Routes>
             </main>
             <Footer />
-          </BrowserRouter>
-        </ProductProvider>
-      </AuthProvider>
+            <Toaster position="top-right" closeButton />
+          </ProductProvider>
+        </AuthProvider>
+      </BrowserRouter>
     </ThemeProvider>
   );
 };

@@ -2,6 +2,7 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { useAuth } from './AuthContext';
 import defaultProducts from '../data/products';
+import { toast } from 'sonner';
 
 // Create context
 export const ProductContext = createContext({
@@ -52,6 +53,7 @@ export const ProductProvider = ({ children }) => {
     const customProducts = updatedProducts.filter(p => p.isUserProduct);
     localStorage.setItem('joeXpressProducts', JSON.stringify(customProducts));
     
+    toast.success('Product added successfully!');
     return newProduct;
   };
 
@@ -66,6 +68,7 @@ export const ProductProvider = ({ children }) => {
     const customProducts = updatedProducts.filter(p => p.isUserProduct);
     localStorage.setItem('joeXpressProducts', JSON.stringify(customProducts));
     
+    toast.success('Product updated successfully!');
     return updatedProduct;
   };
 
@@ -77,6 +80,8 @@ export const ProductProvider = ({ children }) => {
     // Save to localStorage (excluding default products)
     const customProducts = updatedProducts.filter(p => p.isUserProduct);
     localStorage.setItem('joeXpressProducts', JSON.stringify(customProducts));
+    
+    toast.success('Product deleted successfully!');
   };
 
   // Get a product by ID
