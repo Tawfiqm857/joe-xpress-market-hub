@@ -24,14 +24,14 @@ const ProductCard = ({ product }) => {
           to={`/product/${product.id}`} 
           className="product-title"
         >
-          <h3>{product.title}</h3>
+          <h3 className="animate-text-reveal">{product.title}</h3>
         </Link>
         
-        <p className="product-price">
+        <p className="product-price animate-fade-in delay-100">
           {formatPrice(product.price)}
         </p>
         
-        <div className="product-meta">
+        <div className="product-meta animate-fade-in delay-200">
           <span>{product.category}</span>
           <span className="product-location">
             <MapPin size={14} style={{ display: 'inline', marginRight: '4px' }} />
@@ -40,7 +40,7 @@ const ProductCard = ({ product }) => {
         </div>
         
         {product.isUserProduct && (
-          <div className="product-tag">
+          <div className="product-tag animate-fade-in delay-300">
             Your Post
           </div>
         )}
