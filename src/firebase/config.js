@@ -22,9 +22,6 @@ const db = getFirestore(app);
 
 // Set persistence to LOCAL (persists even when browser is closed)
 setPersistence(auth, browserLocalPersistence)
-  .then(() => {
-    console.log("Firebase persistence set to LOCAL");
-  })
   .catch((error) => {
     console.error("Error setting persistence:", error);
   });
