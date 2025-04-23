@@ -2,6 +2,14 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword, 
+  onAuthStateChanged, 
+  signOut,
+  updateProfile as firebaseUpdateProfile
+} from 'firebase/auth';
+import { auth } from '../firebase/config';
 
 // Create the context with a default value
 export const AuthContext = createContext({
@@ -24,30 +32,32 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  // Check if user is already logged in (token in localStorage)
+  // Listen for auth state changes
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const storedToken = localStorage.getItem('joeXpressToken');
-        const storedUser = localStorage.getItem('joeXpressUser');
-        
-        if (storedToken && storedUser) {
-          // Verify token validity (in a real app, this would make an API call)
-          setToken(storedToken);
-          setUser(JSON.parse(storedUser));
-          console.log('User authenticated from stored session');
-        }
-      } catch (error) {
-        console.error('Session verification error:', error);
-        // Clear invalid session data
-        localStorage.removeItem('joeXpressToken');
-        localStorage.removeItem('joeXpressUser');
-      } finally {
-        setLoading(false);
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        // User is signed in
+        currentUser.getIdToken().then(idToken => {
+          setToken(idToken);
+          setUser({
+            id: currentUser.uid,
+            name: currentUser.displayName || 'User',
+            email: currentUser.email,
+            profilePicture: currentUser.photoURL,
+            // Add other user properties as needed
+          });
+          console.log('User authenticated from Firebase');
+        });
+      } else {
+        // User is signed out
+        setUser(null);
+        setToken(null);
       }
-    };
-    
-    checkAuth();
+      setLoading(false);
+    });
+
+    // Cleanup subscription
+    return () => unsubscribe();
   }, []);
 
   // Login function
@@ -56,37 +66,9 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
       setError(null);
       
-      // Get registered users from localStorage
-      const registeredUsers = JSON.parse(localStorage.getItem('joeXpressUsers') || '[]');
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      // The onAuthStateChanged listener will handle setting the user state
       
-      // Find user with matching email and password
-      const matchedUser = registeredUsers.find(
-        user => user.email === email && user.password === password
-      );
-      
-      if (!matchedUser) {
-        throw new Error('Invalid email or password');
-      }
-      
-      // Create user object without password
-      const userWithoutPassword = {
-        id: matchedUser.id,
-        name: matchedUser.name,
-        email: matchedUser.email,
-        profilePicture: matchedUser.profilePicture || null,
-        location: matchedUser.location || null,
-        phone: matchedUser.phone || null,
-        socials: matchedUser.socials || {}
-      };
-      
-      // Store in localStorage
-      const mockToken = `user-token-${Date.now()}`;
-      localStorage.setItem('joeXpressToken', mockToken);
-      localStorage.setItem('joeXpressUser', JSON.stringify(userWithoutPassword));
-      
-      // Update state
-      setUser(userWithoutPassword);
-      setToken(mockToken);
       toast.success('Login successful!');
       return { success: true };
     } catch (err) {
@@ -105,54 +87,15 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
       setError(null);
       
-      // Get registered users from localStorage
-      const registeredUsers = JSON.parse(localStorage.getItem('joeXpressUsers') || '[]');
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       
-      // Check if email already exists
-      if (registeredUsers.some(user => user.email === email)) {
-        throw new Error('Email already registered');
-      }
+      // Update profile with display name
+      await firebaseUpdateProfile(userCredential.user, {
+        displayName: name,
+      });
       
-      // Create new user
-      const newUser = {
-        id: `user-${Date.now()}`,
-        name,
-        email,
-        password, // Store password for login verification
-        profilePicture: null,
-        location: null,
-        phone: null,
-        socials: {
-          facebook: '',
-          twitter: '',
-          instagram: '',
-          linkedin: ''
-        }
-      };
+      // The onAuthStateChanged listener will handle setting the user state
       
-      // Add to registered users
-      registeredUsers.push(newUser);
-      localStorage.setItem('joeXpressUsers', JSON.stringify(registeredUsers));
-      
-      // Create user object without password
-      const userWithoutPassword = {
-        id: newUser.id,
-        name: newUser.name,
-        email: newUser.email,
-        profilePicture: newUser.profilePicture,
-        location: newUser.location,
-        phone: newUser.phone,
-        socials: newUser.socials
-      };
-      
-      // Store in localStorage for current session
-      const mockToken = `user-token-${Date.now()}`;
-      localStorage.setItem('joeXpressToken', mockToken);
-      localStorage.setItem('joeXpressUser', JSON.stringify(userWithoutPassword));
-      
-      // Update state
-      setUser(userWithoutPassword);
-      setToken(mockToken);
       toast.success('Registration successful!');
       return { success: true };
     } catch (err) {
@@ -166,52 +109,30 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Update user profile
-  const updateProfile = (profileData) => {
+  const updateProfile = async (profileData) => {
     try {
-      if (!user) {
+      if (!auth.currentUser) {
         throw new Error('No user is logged in');
       }
       
-      // Get registered users from localStorage
-      const registeredUsers = JSON.parse(localStorage.getItem('joeXpressUsers') || '[]');
+      await firebaseUpdateProfile(auth.currentUser, {
+        displayName: profileData.name || auth.currentUser.displayName,
+        photoURL: profileData.profilePicture || auth.currentUser.photoURL
+      });
       
-      // Find current user
-      const currentUserIndex = registeredUsers.findIndex(u => u.id === user.id);
+      // Update additional user data if needed
+      // This would be stored in Firestore in a complete implementation
       
-      if (currentUserIndex === -1) {
-        throw new Error('User not found');
-      }
+      // Update local state
+      setUser(prev => ({
+        ...prev,
+        name: profileData.name || prev.name,
+        profilePicture: profileData.profilePicture || prev.profilePicture,
+        location: profileData.location || prev.location,
+        phone: profileData.phone || prev.phone,
+        socials: profileData.socials || prev.socials
+      }));
       
-      // Update user data, preserving password
-      const updatedUser = {
-        ...registeredUsers[currentUserIndex],
-        name: profileData.name || registeredUsers[currentUserIndex].name,
-        profilePicture: profileData.profilePicture || registeredUsers[currentUserIndex].profilePicture,
-        location: profileData.location || registeredUsers[currentUserIndex].location,
-        phone: profileData.phone || registeredUsers[currentUserIndex].phone,
-        socials: profileData.socials || registeredUsers[currentUserIndex].socials
-      };
-      
-      // Update in registered users
-      registeredUsers[currentUserIndex] = updatedUser;
-      localStorage.setItem('joeXpressUsers', JSON.stringify(registeredUsers));
-      
-      // Create user object without password
-      const userWithoutPassword = {
-        id: updatedUser.id,
-        name: updatedUser.name,
-        email: updatedUser.email,
-        profilePicture: updatedUser.profilePicture,
-        location: updatedUser.location,
-        phone: updatedUser.phone,
-        socials: updatedUser.socials
-      };
-      
-      // Update current user session
-      localStorage.setItem('joeXpressUser', JSON.stringify(userWithoutPassword));
-      
-      // Update state
-      setUser(userWithoutPassword);
       toast.success('Profile updated successfully!');
       return { success: true };
     } catch (err) {
@@ -222,13 +143,15 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Logout function
-  const logout = () => {
-    localStorage.removeItem('joeXpressToken');
-    localStorage.removeItem('joeXpressUser');
-    setUser(null);
-    setToken(null);
-    toast.info('Logged out successfully');
-    navigate('/login');
+  const logout = async () => {
+    try {
+      await signOut(auth);
+      toast.info('Logged out successfully');
+      navigate('/login');
+    } catch (err) {
+      console.error('Logout error:', err);
+      toast.error('Failed to logout');
+    }
   };
 
   return (
@@ -236,7 +159,7 @@ export const AuthProvider = ({ children }) => {
       value={{
         user,
         token,
-        isAuthenticated: !!user && !!token,
+        isAuthenticated: !!user,
         loading,
         login,
         register,
