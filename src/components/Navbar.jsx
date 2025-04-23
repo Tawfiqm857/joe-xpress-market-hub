@@ -1,4 +1,5 @@
-import React, { useContext, useState } from "react";
+
+import React, { useContext, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ThemeContext } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
@@ -10,6 +11,13 @@ const Navbar = () => {
   const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  // Close mobile menu when navigating to a new page
+  useEffect(() => {
+    return () => {
+      setIsMenuOpen(false);
+    };
+  }, [navigate]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -32,25 +40,25 @@ const Navbar = () => {
         </Link>
 
         {/* Mobile Menu Button */}
-        <button className="menu-toggle" onClick={toggleMenu}>
+        <button className="menu-toggle" onClick={toggleMenu} aria-label="Toggle menu">
           {isMenuOpen ? "✕" : "☰"}
         </button>
 
         {/* Desktop Navigation */}
         <div className={`navbar-links ${isMenuOpen ? "open" : ""}`}>
-          <Link to="/" className="navbar-link">
+          <Link to="/" className="navbar-link" onClick={() => setIsMenuOpen(false)}>
             Home
           </Link>
-          <Link to="/products" className="navbar-link">
+          <Link to="/products" className="navbar-link" onClick={() => setIsMenuOpen(false)}>
             Products
           </Link>
 
           {isAuthenticated ? (
             <>
-              <Link to="/post-product" className="navbar-link">
+              <Link to="/post-product" className="navbar-link" onClick={() => setIsMenuOpen(false)}>
                 Sell
               </Link>
-              <Link to="/dashboard" className="navbar-link">
+              <Link to="/dashboard" className="navbar-link" onClick={() => setIsMenuOpen(false)}>
                 Dashboard
               </Link>
               <button className="navbar-button" onClick={handleLogout}>
@@ -60,10 +68,10 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <Link to="/login" className="navbar-link">
+              <Link to="/login" className="navbar-link" onClick={() => setIsMenuOpen(false)}>
                 Login
               </Link>
-              <Link to="/register" className="navbar-signup">
+              <Link to="/register" className="navbar-signup" onClick={() => setIsMenuOpen(false)}>
                 Sign Up
               </Link>
             </>
