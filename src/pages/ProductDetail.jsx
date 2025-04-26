@@ -38,7 +38,7 @@ const ProductDetail = () => {
     <div className={`${theme}-mode`}>
       <div className="container section">
         {/* Breadcrumbs */}
-        <div style={{ marginBottom: '1.5rem' }}>
+        <div style={{ marginBottom: '1.5rem' }} offset={-10}>
           <Link 
             to="/products" 
             style={{ 

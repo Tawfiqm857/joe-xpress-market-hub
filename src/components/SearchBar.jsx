@@ -34,6 +34,7 @@ const SearchBar = () => {
           border: 'none',
           boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
           width: '100%',
+	color: 'darkblue'
         }}
       />
       <button
@@ -44,7 +45,7 @@ const SearchBar = () => {
           top: '50%',
           transform: 'translateY(-50%)',
           backgroundColor: 'var(--accent)',
-          color: 'white',
+          color: 'darkblue',
           border: 'none',
           borderRadius: '1.5rem',
           padding: '0.5rem 1.5rem',

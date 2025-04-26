@@ -1,7 +1,7 @@
 
 /* Product Grid and Card Styles */
 .products-container {
-  margin-top: 2rem;
+  margin-top: calc(100vh - 110px);
 }
 
 .product-card {
