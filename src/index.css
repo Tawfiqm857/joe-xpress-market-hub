@@ -28,10 +28,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
-/*
-main{
-offset:calc(100vh - 100px);
-}*/
 
 .light-mode {
   background-color: var(--background-light);

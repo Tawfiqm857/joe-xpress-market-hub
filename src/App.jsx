@@ -26,7 +26,7 @@ const App = () => {
         <AuthProvider>
           <ProductProvider>
             <Navbar />
-            <main style={{ minHeight: "calc(100vh - 100px)"  }}>
+            <main style={{ minHeight: "calc(100vh - 100px)" }}>
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/login" element={<Login />} />

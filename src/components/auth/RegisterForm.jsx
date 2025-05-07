@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { ThemeContext } from '../../context/ThemeContext';
 import { User, Mail, Lock, KeyRound } from 'lucide-react';
@@ -9,7 +9,6 @@ import '../../styles/auth.css';
 const RegisterForm = () => {
   const { theme } = React.useContext(ThemeContext);
   const { register, error: authError } = useAuth();
-  const navigate = useNavigate();
   
   const [formData, setFormData] = useState({
     name: '',
@@ -88,11 +87,10 @@ const RegisterForm = () => {
       
       try {
         const result = await register(formData.name, formData.email, formData.password);
-        if (result.success) {
-          navigate('/dashboard');
-        } else {
+        if (!result.success) {
           setRegisterError(result.error || 'Registration failed. Please try again.');
         }
+        // If successful, useEffect will handle redirect
       } catch (err) {
         setRegisterError(err.message || 'An unexpected error occurred');
         console.error('Registration submission error:', err);
