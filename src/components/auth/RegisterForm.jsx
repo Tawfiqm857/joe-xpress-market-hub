@@ -1,14 +1,16 @@
 
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { ThemeContext } from '../../context/ThemeContext';
-import { User, Mail, Lock, KeyRound } from 'lucide-react';
+import { User, Mail, Lock, KeyRound, AlertCircle } from 'lucide-react';
 import '../../styles/auth.css';
+import { toast } from 'sonner';
 
 const RegisterForm = () => {
   const { theme } = React.useContext(ThemeContext);
-  const { register, error: authError } = useAuth();
+  const { register, error: authError, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   
   const [formData, setFormData] = useState({
     name: '',
@@ -26,6 +28,18 @@ const RegisterForm = () => {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [registerError, setRegisterError] = useState('');
+  
+  // Redirect if authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
+  
+  // Clear auth error when component mounts or unmounts
+  useEffect(() => {
+    return () => setRegisterError('');
+  }, []);
   
   const validateForm = () => {
     let valid = true;
@@ -89,21 +103,29 @@ const RegisterForm = () => {
         const result = await register(formData.name, formData.email, formData.password);
         if (!result.success) {
           setRegisterError(result.error || 'Registration failed. Please try again.');
+          toast.error(result.error || 'Registration failed. Please try again.');
+        } else {
+          toast.success('Registration successful! Welcome to Joe Express.');
+          // Redirect is handled by useEffect above
         }
-        // If successful, useEffect will handle redirect
       } catch (err) {
         setRegisterError(err.message || 'An unexpected error occurred');
+        toast.error(err.message || 'An unexpected error occurred');
         console.error('Registration submission error:', err);
       } finally {
         setIsSubmitting(false);
       }
+    } else {
+      // Show validation errors toast
+      toast.error('Please fix the errors in the form');
     }
   };
   
   return (
     <div className="auth-container animate-fade-in">
       {(authError || registerError) && (
-        <div className="auth-error animate-slide-left">
+        <div className="auth-error animate-slide-left flex items-center">
+          <AlertCircle size={18} className="mr-2" />
           {registerError || authError}
         </div>
       )}
@@ -113,7 +135,7 @@ const RegisterForm = () => {
       <form className="auth-form" onSubmit={handleSubmit}>
         <div className="form-group animate-slide-right delay-100">
           <label htmlFor="name" className="form-label">
-            <User size={18} style={{ display: 'inline', marginRight: '8px' }} />
+            <User size={18} className="inline mr-2" />
             Full Name
           </label>
           <input
@@ -130,7 +152,7 @@ const RegisterForm = () => {
         
         <div className="form-group animate-slide-right delay-200">
           <label htmlFor="email" className="form-label">
-            <Mail size={18} style={{ display: 'inline', marginRight: '8px' }} />
+            <Mail size={18} className="inline mr-2" />
             Email
           </label>
           <input
@@ -147,7 +169,7 @@ const RegisterForm = () => {
         
         <div className="form-group animate-slide-right delay-300">
           <label htmlFor="password" className="form-label">
-            <Lock size={18} style={{ display: 'inline', marginRight: '8px' }} />
+            <Lock size={18} className="inline mr-2" />
             Password
           </label>
           <input
@@ -164,7 +186,7 @@ const RegisterForm = () => {
         
         <div className="form-group animate-slide-right delay-400">
           <label htmlFor="confirmPassword" className="form-label">
-            <KeyRound size={18} style={{ display: 'inline', marginRight: '8px' }} />
+            <KeyRound size={18} className="inline mr-2" />
             Confirm Password
           </label>
           <input

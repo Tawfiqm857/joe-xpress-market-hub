@@ -19,7 +19,7 @@ const ProtectedRoute = ({ children }) => {
     return (
       <div className="loading-container">
         <div className="loading-spinner"></div>
-        <p className="animate-fade-in">Checking authentication...</p>
+        <p className="animate-fade-in mt-4 text-center">Checking authentication...</p>
       </div>
     );
   }

@@ -21,7 +21,7 @@ const SearchBar = () => {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="What are you looking for?"
-        className="w-full py-3 px-5 pr-12 rounded-full border-none shadow-md focus:outline-none focus:ring-2 focus:ring-accent"
+        className="w-full py-3 px-5 pr-12 rounded-full border-none shadow-lg focus:outline-none focus:ring-2 focus:ring-accent transition-shadow"
       />
       <button
         type="submit"
