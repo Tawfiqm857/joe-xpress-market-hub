@@ -1,9 +1,11 @@
+
 import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ThemeContext } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
 import ThemeToggle from "./ThemeToggle";
-import "./Navbar.css"; // Import the CSS file
+import CartIcon from "./CartIcon";
+import "./Navbar.css";
 
 const Navbar = () => {
   const { theme } = useContext(ThemeContext);
@@ -69,7 +71,10 @@ const Navbar = () => {
             </>
           )}
 
-          <ThemeToggle />
+          <div className="flex items-center gap-3">
+            <CartIcon />
+            <ThemeToggle />
+          </div>
         </div>
       </div>
 
@@ -81,6 +86,9 @@ const Navbar = () => {
           </Link>
           <Link to="/products" className="mobile-link" onClick={() => setIsMenuOpen(false)}>
             Products
+          </Link>
+          <Link to="/cart" className="mobile-link" onClick={() => setIsMenuOpen(false)}>
+            Cart
           </Link>
 
           {isAuthenticated ? (

@@ -1,11 +1,10 @@
 
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ThemeContext } from '../context/ThemeContext';
+import { Search } from 'lucide-react';
 
 const SearchBar = () => {
   const [query, setQuery] = useState('');
-  const { theme } = useContext(ThemeContext);
   const navigate = useNavigate();
 
   const handleSearch = (e) => {
@@ -16,43 +15,20 @@ const SearchBar = () => {
   };
 
   return (
-    <form onSubmit={handleSearch} style={{
-      display: 'flex',
-      maxWidth: '100%',
-      position: 'relative',
-    }}>
+    <form onSubmit={handleSearch} className="relative w-full max-w-md">
       <input
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="What are you looking for?"
-        style={{
-          flex: 1,
-          padding: '1rem 1.5rem',
-          fontSize: '1rem',
-          borderRadius: '2rem',
-          border: 'none',
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-          width: '100%',
-        }}
+        className="w-full py-3 px-5 pr-12 rounded-full border-none shadow-md focus:outline-none focus:ring-2 focus:ring-accent"
       />
       <button
         type="submit"
-        style={{
-          position: 'absolute',
-          right: '0.5rem',
-          top: '50%',
-          transform: 'translateY(-50%)',
-          backgroundColor: 'var(--accent)',
-          color: 'white',
-          border: 'none',
-          borderRadius: '1.5rem',
-          padding: '0.5rem 1.5rem',
-          cursor: 'pointer',
-          fontSize: '0.9rem',
-        }}
+        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-accent text-white py-1.5 px-4 rounded-full hover:bg-accent/90 transition-colors"
       >
-        Search
+        <Search className="w-4 h-4 md:hidden" />
+        <span className="hidden md:block">Search</span>
       </button>
     </form>
   );
