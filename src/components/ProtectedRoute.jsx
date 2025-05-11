@@ -17,9 +17,10 @@ const ProtectedRoute = ({ children }) => {
   // Show loading state while checking authentication
   if (loading) {
     return (
-      <div className="loading-container">
-        <div className="loading-spinner"></div>
-        <p className="animate-fade-in mt-4 text-center">Checking authentication...</p>
+      <div className="flex flex-col items-center justify-center min-h-[60vh]">
+        <div className="w-12 h-12 border-4 border-accent/30 border-t-accent rounded-full animate-spin mb-4"></div>
+        <p className="text-lg font-medium animate-pulse">Verifying authentication...</p>
+        <p className="text-sm text-muted-foreground mt-2">Please wait a moment</p>
       </div>
     );
   }

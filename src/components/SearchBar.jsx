@@ -5,6 +5,7 @@ import { Search } from 'lucide-react';
 
 const SearchBar = () => {
   const [query, setQuery] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
   const navigate = useNavigate();
 
   const handleSearch = (e) => {
@@ -15,13 +16,18 @@ const SearchBar = () => {
   };
 
   return (
-    <form onSubmit={handleSearch} className="relative w-full max-w-md">
+    <form 
+      onSubmit={handleSearch} 
+      className={`relative w-full max-w-md transition-all duration-300 ${isFocused ? 'scale-105' : ''}`}
+    >
       <input
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
         placeholder="What are you looking for?"
-        className="w-full py-3 px-5 pr-12 rounded-full border-none shadow-lg focus:outline-none focus:ring-2 focus:ring-accent transition-shadow"
+        className="w-full py-3 px-5 pr-12 rounded-full border-2 border-transparent focus:border-accent shadow-lg focus:outline-none transition-all duration-300"
       />
       <button
         type="submit"

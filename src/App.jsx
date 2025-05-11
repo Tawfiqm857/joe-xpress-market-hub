@@ -5,6 +5,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { ProductProvider } from "./context/ProductContext";
 import { CartProvider } from "./context/CartContext";
 import { Toaster } from "sonner";
+import { ScrollToTop } from "./components/ScrollToTop";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -30,6 +31,7 @@ const App = () => {
         <AuthProvider>
           <ProductProvider>
             <CartProvider>
+              <ScrollToTop />
               <Navbar />
               <main style={{ minHeight: "calc(100vh - 100px)" }}>
                 <Routes>
@@ -63,7 +65,10 @@ const App = () => {
                 </Routes>
               </main>
               <Footer />
-              <Toaster position="top-right" closeButton richColors />
+              <Toaster position="top-right" closeButton richColors toastOptions={{
+                duration: 5000,
+                className: "custom-toast",
+              }} />
             </CartProvider>
           </ProductProvider>
         </AuthProvider>
