@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -295,39 +296,5 @@ body {
 
   .section {
     padding: 2rem 0;
-  }
-}
-
-/* Floating animation for hero background elements */
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px) rotate(0deg);
-  }
-  33% {
-    transform: translateY(-20px) rotate(5deg);
-  }
-  66% {
-    transform: translateY(-10px) rotate(-3deg);
-  }
-}
-
-/* Additional responsive improvements for hero section */
-@media (max-width: 768px) {
-  .hero-stats {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .hero-buttons {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .hero-buttons a {
-    width: 100%;
-    max-width: 280px;
-    justify-content: center;
   }
 }
