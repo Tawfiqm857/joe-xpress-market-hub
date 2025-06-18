@@ -1,11 +1,11 @@
 
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ThemeContext } from '../context/ThemeContext';
+import { Search } from 'lucide-react';
 
 const SearchBar = () => {
   const [query, setQuery] = useState('');
-  const { theme } = useContext(ThemeContext);
+  const [isFocused, setIsFocused] = useState(false);
   const navigate = useNavigate();
 
   const handleSearch = (e) => {
@@ -16,44 +16,24 @@ const SearchBar = () => {
   };
 
   return (
-    <form onSubmit={handleSearch} style={{
-      display: 'flex',
-      maxWidth: '100%',
-      position: 'relative',
-    }}>
+    <form 
+      onSubmit={handleSearch} 
+      className={`relative w-full max-w-xl transition-all duration-300 ${isFocused ? 'scale-[1.02]' : ''}`}
+    >
       <input
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="What are you looking for?"
-        style={{
-          flex: 1,
-          padding: '1rem 1.5rem',
-          fontSize: '1rem',
-          borderRadius: '2rem',
-          border: 'none',
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-          width: '100%',
-	color: 'darkblue'
-        }}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
+        placeholder="Search products, categories, or sellers..."
+        className="w-full py-4 px-6 pr-14 rounded-2xl border-2 border-gray-200 focus:border-accent shadow-lg focus:outline-none transition-all duration-300 text-base placeholder:text-gray-400 bg-white/95 backdrop-blur-sm"
       />
       <button
         type="submit"
-        style={{
-          position: 'absolute',
-          right: '0.5rem',
-          top: '50%',
-          transform: 'translateY(-50%)',
-          backgroundColor: 'var(--accent)',
-          color: 'darkblue',
-          border: 'none',
-          borderRadius: '1.5rem',
-          padding: '0.5rem 1.5rem',
-          cursor: 'pointer',
-          fontSize: '0.9rem',
-        }}
+        className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-accent text-white p-2.5 rounded-xl hover:bg-accent/90 transition-all duration-300 hover:scale-105 shadow-md"
       >
-        Search
+        <Search className="w-5 h-5" />
       </button>
     </form>
   );

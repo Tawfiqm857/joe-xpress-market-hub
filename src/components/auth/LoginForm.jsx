@@ -1,10 +1,11 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { User, Lock } from 'lucide-react';
+import { User, Lock, AlertCircle } from 'lucide-react';
 import '../../styles/auth.css';
 import { ThemeContext } from '../../context/ThemeContext';
+import { toast } from 'sonner';
 
 const LoginForm = ({ redirectPath = '/dashboard' }) => {
   const { theme } = React.useContext(ThemeContext);
@@ -23,6 +24,11 @@ const LoginForm = ({ redirectPath = '/dashboard' }) => {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loginError, setLoginError] = useState('');
+  
+  // Clear auth error when component mounts or unmounts
+  useEffect(() => {
+    return () => setLoginError('');
+  }, []);
   
   const validateForm = () => {
     let valid = true;
@@ -67,24 +73,32 @@ const LoginForm = ({ redirectPath = '/dashboard' }) => {
       try {
         const result = await login(formData.email, formData.password);
         if (result.success) {
+          // Show success toast and redirect
+          toast.success('Login successful! Welcome back.');
           // Redirect to the requested page after successful login
           navigate(redirectPath, { replace: true });
         } else {
           setLoginError(result.error || 'Invalid email or password');
+          toast.error(result.error || 'Invalid email or password');
         }
       } catch (err) {
         setLoginError(err.message || 'An unexpected error occurred');
+        toast.error(err.message || 'An unexpected error occurred');
         console.error('Login submission error:', err);
       } finally {
         setIsSubmitting(false);
       }
+    } else {
+      // Show validation errors toast
+      toast.error('Please fix the errors in the form');
     }
   };
   
   return (
     <div className="auth-container animate-fade-in">
       {(authError || loginError) && (
-        <div className="auth-error animate-slide-left">
+        <div className="auth-error animate-slide-left flex items-center">
+          <AlertCircle size={18} className="mr-2" />
           {loginError || authError}
         </div>
       )}
@@ -94,7 +108,7 @@ const LoginForm = ({ redirectPath = '/dashboard' }) => {
       <form className="auth-form" onSubmit={handleSubmit}>
         <div className="form-group animate-slide-right delay-100">
           <label htmlFor="email" className="form-label">
-            <User size={18} style={{ display: 'inline', marginRight: '8px' }} />
+            <User size={18} className="inline mr-2" />
             Email
           </label>
           <input
@@ -111,7 +125,7 @@ const LoginForm = ({ redirectPath = '/dashboard' }) => {
         
         <div className="form-group animate-slide-right delay-200">
           <label htmlFor="password" className="form-label">
-            <Lock size={18} style={{ display: 'inline', marginRight: '8px' }} />
+            <Lock size={18} className="inline mr-2" />
             Password
           </label>
           <input

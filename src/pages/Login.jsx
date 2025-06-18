@@ -1,6 +1,6 @@
 
 import React, { useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { ThemeContext } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import LoginForm from '../components/auth/LoginForm';
@@ -28,6 +28,15 @@ const Login = () => {
       <div className="container section">
         <h1 className="page-title animate-fade-in">Login to Your Account</h1>
         <LoginForm redirectPath={from} />
+        
+        <div className="mt-8 text-center animate-fade-in delay-500">
+          <Link to="/" className="inline-flex items-center text-primary hover:underline">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to Home
+          </Link>
+        </div>
       </div>
     </div>
   );
