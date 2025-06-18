@@ -28,7 +28,7 @@ const Navbar = () => {
       <div className="navbar-container">
         {/* Logo */}
         <Link to="/" className="navbar-logo">
-          <h1>
+          <h1 className="text-xl md:text-2xl font-bold">
             Joe<span className="accent">Express</span>
           </h1>
         </Link>
@@ -40,38 +40,40 @@ const Navbar = () => {
 
         {/* Desktop Navigation */}
         <div className={`navbar-links ${isMenuOpen ? "open" : ""}`}>
-          <Link to="/" className="navbar-link">
+          <Link to="/" className="navbar-link text-sm md:text-base">
             Home
           </Link>
-          <Link to="/products" className="navbar-link">
+          <Link to="/products" className="navbar-link text-sm md:text-base">
             Products
           </Link>
 
           {isAuthenticated ? (
             <>
-              <Link to="/post-product" className="navbar-link">
+              <Link to="/post-product" className="navbar-link text-sm md:text-base">
                 Sell
               </Link>
-              <Link to="/dashboard" className="navbar-link">
+              <Link to="/dashboard" className="navbar-link text-sm md:text-base">
                 Dashboard
               </Link>
-              <button className="navbar-button" onClick={handleLogout}>
+              <button className="navbar-button text-sm md:text-base" onClick={handleLogout}>
                 Logout
               </button>
-              <div className="navbar-user">{user?.name}</div>
+              <div className="navbar-user text-sm md:text-base px-3 py-1.5 rounded-full">
+                {user?.name}
+              </div>
             </>
           ) : (
             <>
-              <Link to="/login" className="navbar-link">
+              <Link to="/login" className="navbar-link text-sm md:text-base">
                 Login
               </Link>
-              <Link to="/register" className="navbar-signup">
+              <Link to="/register" className="navbar-signup text-sm md:text-base px-4 py-2">
                 Sign Up
               </Link>
             </>
           )}
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4 ml-2">
             <CartIcon />
             <ThemeToggle />
           </div>
@@ -81,41 +83,43 @@ const Navbar = () => {
       {/* Mobile Menu */}
       {isMenuOpen && (
         <div className="mobile-menu">
-          <Link to="/" className="mobile-link" onClick={() => setIsMenuOpen(false)}>
+          <Link to="/" className="mobile-link text-base py-3" onClick={() => setIsMenuOpen(false)}>
             Home
           </Link>
-          <Link to="/products" className="mobile-link" onClick={() => setIsMenuOpen(false)}>
+          <Link to="/products" className="mobile-link text-base py-3" onClick={() => setIsMenuOpen(false)}>
             Products
           </Link>
-          <Link to="/cart" className="mobile-link" onClick={() => setIsMenuOpen(false)}>
+          <Link to="/cart" className="mobile-link text-base py-3" onClick={() => setIsMenuOpen(false)}>
             Cart
           </Link>
 
           {isAuthenticated ? (
             <>
-              <Link to="/post-product" className="mobile-link" onClick={() => setIsMenuOpen(false)}>
+              <Link to="/post-product" className="mobile-link text-base py-3" onClick={() => setIsMenuOpen(false)}>
                 Sell
               </Link>
-              <Link to="/dashboard" className="mobile-link" onClick={() => setIsMenuOpen(false)}>
+              <Link to="/dashboard" className="mobile-link text-base py-3" onClick={() => setIsMenuOpen(false)}>
                 Dashboard
               </Link>
-              <button className="mobile-button" onClick={handleLogout}>
+              <button className="mobile-button text-base py-3" onClick={handleLogout}>
                 Logout
               </button>
-              <div className="mobile-user">{user?.name}</div>
+              <div className="mobile-user text-base py-2 my-2">
+                Welcome, {user?.name}
+              </div>
             </>
           ) : (
             <>
-              <Link to="/login" className="mobile-link" onClick={() => setIsMenuOpen(false)}>
+              <Link to="/login" className="mobile-link text-base py-3" onClick={() => setIsMenuOpen(false)}>
                 Login
               </Link>
-              <Link to="/register" className="mobile-signup" onClick={() => setIsMenuOpen(false)}>
+              <Link to="/register" className="mobile-signup text-base py-3 my-2" onClick={() => setIsMenuOpen(false)}>
                 Sign Up
               </Link>
             </>
           )}
 
-          <div className="mobile-theme-toggle">
+          <div className="mobile-theme-toggle py-4">
             <ThemeToggle />
           </div>
         </div>

@@ -37,30 +37,45 @@ const Dashboard = () => {
   };
   
   return (
-    <div className={`${theme}-mode`}>
-      <div className="container section">
-        <h1 className="page-title animate-text-reveal">Seller Dashboard</h1>
+    <div className={`${theme}-mode min-h-screen`}>
+      <div className="container py-8 px-4 md:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div className="mb-8">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary mb-2 animate-fade-in">
+            Seller Dashboard
+          </h1>
+          <p className="text-base md:text-lg text-muted-foreground animate-fade-in delay-100">
+            Manage your products, track performance, and grow your business
+          </p>
+        </div>
         
         {/* Profile Section */}
-        <ProfileSection />
+        <div className="mb-8 animate-fade-in delay-200">
+          <ProfileSection />
+        </div>
         
         {/* Stats Cards */}
-        <DashboardStats stats={stats} />
+        <div className="mb-8 animate-fade-in delay-300">
+          <DashboardStats stats={stats} />
+        </div>
         
         {/* Tab Navigation */}
-        <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
+        <div className="mb-6 animate-fade-in delay-400">
+          <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
+        </div>
         
         {/* Tab Content */}
-        {activeTab === 'products' && (
-          <ProductsContent 
-            products={userProducts} 
-            onDeleteProduct={handleDeleteProduct} 
-          />
-        )}
-        
-        {activeTab === 'messages' && (
-          <MessagesContent />
-        )}
+        <div className="animate-fade-in delay-500">
+          {activeTab === 'products' && (
+            <ProductsContent 
+              products={userProducts} 
+              onDeleteProduct={handleDeleteProduct} 
+            />
+          )}
+          
+          {activeTab === 'messages' && (
+            <MessagesContent />
+          )}
+        </div>
       </div>
     </div>
   );

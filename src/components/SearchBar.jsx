@@ -18,7 +18,7 @@ const SearchBar = () => {
   return (
     <form 
       onSubmit={handleSearch} 
-      className={`relative w-full max-w-md transition-all duration-300 ${isFocused ? 'scale-105' : ''}`}
+      className={`relative w-full max-w-xl transition-all duration-300 ${isFocused ? 'scale-[1.02]' : ''}`}
     >
       <input
         type="text"
@@ -26,15 +26,14 @@ const SearchBar = () => {
         onChange={(e) => setQuery(e.target.value)}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
-        placeholder="What are you looking for?"
-        className="w-full py-3 px-5 pr-12 rounded-full border-2 border-transparent focus:border-accent shadow-lg focus:outline-none transition-all duration-300"
+        placeholder="Search products, categories, or sellers..."
+        className="w-full py-4 px-6 pr-14 rounded-2xl border-2 border-gray-200 focus:border-accent shadow-lg focus:outline-none transition-all duration-300 text-base placeholder:text-gray-400 bg-white/95 backdrop-blur-sm"
       />
       <button
         type="submit"
-        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-accent text-white py-1.5 px-4 rounded-full hover:bg-accent/90 transition-colors"
+        className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-accent text-white p-2.5 rounded-xl hover:bg-accent/90 transition-all duration-300 hover:scale-105 shadow-md"
       >
-        <Search className="w-4 h-4 md:hidden" />
-        <span className="hidden md:block">Search</span>
+        <Search className="w-5 h-5" />
       </button>
     </form>
   );
